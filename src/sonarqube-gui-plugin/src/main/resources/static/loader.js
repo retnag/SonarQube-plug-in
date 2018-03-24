@@ -55,6 +55,8 @@ SM.loader.src = {
       'js/dashboard/main.js',
       'js/help/pageBuilder.js',
       'js/help/main.js',
+      'js/cloneViewer/pageBuilder.js',
+      'js/cloneViewer/main.js',
       'last.js'
     ],
     styles: [
