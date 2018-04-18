@@ -57,6 +57,7 @@ SM.loader.src = {
       'js/help/main.js',
       'js/cloneViewer/pageBuilder.js',
       'js/cloneViewer/main.js',
+      'js/cloneViewer/RawFileLoader.js',
       'last.js'
     ],
     styles: [
