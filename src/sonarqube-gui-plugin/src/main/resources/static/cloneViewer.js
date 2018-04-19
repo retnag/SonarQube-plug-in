@@ -21,7 +21,7 @@ window.registerExtension('SourceMeterGUI/cloneViewer', function(options) {
    *  *: information will stay there until an explicit page load occures, for more
    *  info see how react works, sonarQube uses react.
    */
-  var stateKey = options.component.key + "-clones";
+  var stateKey = options.component.key;
 
   /*  DO NOT EDIT BELOW THIS LINE (you can, but should not have to) */
 
