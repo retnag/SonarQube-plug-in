@@ -11,18 +11,19 @@ SM.RawFileLoader = new (function() { // Singleton object
    * @param  {Function} callback is called with the raw data passed as argument (string)
    * @return {void}              [description]
    */
-  this.requestRawFile = function(fileUrl, callback) {
-    // ...
-
-    window.SonarRequest.getJSON(location.origin + '/api/settings/values', {
-      component: SM.options.component.key,
-      keys: queryString
-    }).then(function(response) {
-      //visszaadja a fájlnak a szövegét stringben
-      callback(response.toString());
-    });
-
-    // ...
-  };
+  this.requestRawFile = function(projectName, fileUrl, callback) {
+  window.SonarRequest.request(location.origin + '/api/sources/raw')
+    .setMethod("GET")
+    .setData({
+      key: projectName+":"+fileUrl
+    })
+    .submit()
+    .then(function(response) {
+      response.text().then(function(res){
+        //visszaadja a fájlnak a szövegét stringben
+        callback(res);
+      })
+    })
+};
 
 })();
