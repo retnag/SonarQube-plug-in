@@ -149,7 +149,7 @@ SM.CloneWidget = function(elem, options) {
       // there sould always be at least 2 instances per class
       var cloneInstance = cloneClass.cloneInstances[0];
       row += '<td class="sm-widget-line-icons"><i class="sm-icon-square sm-icon-clone-instance"></i></td>';
-      row += '<td class="sm-widget-row-instance">' + this.generatePositionAnchorPopup(cloneInstance) + '</td>';
+      row += '<td class="sm-widget-row-instance">' + this.generateCloneViewerLink(cloneInstance) + '</td>';
       this.instanceMetrics.forEach(function(metric) {
         row += '<td>';
         row += SM.formatMetric(cloneClass.cloneInstances[0].cloneInstanceMetrics[metric.title], metric);
@@ -164,7 +164,7 @@ SM.CloneWidget = function(elem, options) {
         cloneInstance = cloneClass.cloneInstances[j];
         row = '<tr>';
         row += '<td class="sm-widget-line-icons"><i class="sm-icon-square sm-icon-clone-instance"></i></td>';
-        row += '<td class="sm-widget-row-instance">' + this.generatePositionAnchorPopup(cloneInstance) + '</td>';
+        row += '<td class="sm-widget-row-instance">' + this.generateCloneViewerLink(cloneInstance) + '</td>';
         this.instanceMetrics.forEach(function(metric) {
           // there sould always be at least 2 instances per class
           row += '<td>' + SM.formatMetric(cloneInstance.cloneInstanceMetrics[metric.title], metric) + '</td>';
@@ -264,6 +264,21 @@ SM.CloneWidget = function(elem, options) {
     this.rows.startOffset = input;
   }
   this.setRowsStartOffset = this.setRowsStartOffset.bind(this);
+
+//új betöltő
+  this.generateCloneViewerLink = function(pack){
+    var anchor = pack.name;
+    var aLinkVege = 'my%3Avalami'; //ide nyilván más kell
+    if (pack.positions[0]) {
+      var url = 'http://' + window.location.host + '/project/extension/SourceMeterGUI/cloneViewer?id=' + SM.options.component.key;
+      var href = 'javascript:(function() {SM.options.router.push(\'' + url + '\', \'' + pack.displayedPath
+                 + '\', \'resizable,scrollbars,status\');})()';
+      anchor = '<a href="' + href + '">' + pack.name + '</a>';
+    }
+    // format: <a href="javascript:window.open('some.html', 'yourWindowName', 'width=200,height=150');">Test</a>
+    return anchor;
+  };
+  this.generateCloneViewerLink = this.generateCloneViewerLink.bind(this);
 
   this.generatePositionAnchorTab = function(pack) {
     var anchor = pack.name;
