@@ -40,7 +40,7 @@ SM.getRoot().html([
   $( "#cloneClassSelector" ).on( "selectmenuchange", function( event, ui ) {
   var temp1 = [];
   SM.state[SM.options.component.key].clone.data.forEach(function(x){
-		if(x.name = $('#cloneClassSelector').val()){
+		if(x.name === $('#cloneClassSelector').val()){
 			x.cloneInstances.forEach(function(c){
   				temp1.push("<option value="+c.displayedPath+"> "+c.name+"</option>");
   			});
