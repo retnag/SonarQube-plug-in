@@ -7,11 +7,54 @@
 SM.pageBuilder.cloneViewer = {};
 
 SM.pageBuilder.cloneViewer.build = function() {
-  html = "heloka!";
+    var cloneClassSelectorOptions = [
+      '<select id="cloneClassSelector">',
+      '</select>'
+    ].join("\n");
 
-  SM.getRoot().html([
-    '<div id="cloneClassSelector"></div>',
-    '<div id="cloneInstanceSelector"></div>',
-    '<div ></div>'
+    var cloneInstanceSelectorOptions = [
+      '<select id="cloneInstanceSelector">',
+      '</select>'
+    ].join("\n");
+
+SM.getRoot().html([
+    '<div id="cloneClassSelectorContainer">CloneClassSelector: '+cloneClassSelectorOptions+'</div>',
+    '<div id="cloneInstanceSelectorContainer">CloneInstanceSelector: '+cloneInstanceSelectorOptions+'</div>',
+    '<div id="cloneViewer"></div>'
   ].join(""));
+
+
+  
+  var temp = [];
+  SM.state[SM.options.component.key].clone.data.forEach(function(c){
+  	temp.push("<option value="+c.name+"> "+c.name+"</option>");
+  });
+  $( "#cloneClassSelector" )
+	.append(temp.join(""))
+    .selectmenu();
+
+  
+
+
+//eventlisteners
+  $( "#cloneClassSelector" ).on( "selectmenuchange", function( event, ui ) {
+  var temp1 = [];
+  SM.state[SM.options.component.key].clone.data.forEach(function(x){
+		if(x.name = $('#cloneClassSelector').val()){
+			x.cloneInstances.forEach(function(c){
+  				temp1.push("<option value="+c.displayedPath+"> "+c.name+"</option>");
+  			});
+		}
+	});
+  $( "#cloneInstanceSelector" )
+	.append(temp1.join(""))
+    .selectmenu();
+  }
+ );
+
+   $( "#cloneInstanceSelector" ).on( "selectmenuchange", function( event, ui ) {
+   		SM.RawFileLoader.requestRawFile($('#cloneInstanceSelector').val(),function(rawFileData){
+			$( "#cloneViewer" ).html(rawFileData);
+   		});
+	});
 };
