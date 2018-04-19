@@ -78,5 +78,20 @@ if (typeof SM === 'undefined') { // ensure this only runs once
     }, time);
   };
 
+  /**
+   * binds an objects functions this scope to itself, so it doesnt matter from
+   * where a function is called, this is always going to be the object the
+   * function belongs to.
+   * @param  {object} self the object we wish to do the binding on
+   * @return {void}
+   */
+  SM.bindFunctions = function(self){
+    Object.keys(self).forEach((prop)=>{
+      if(self.hasOwnProperty(prop) && typeof self[prop] === "function"){
+      self[prop] = self[prop].bind(self);
+      }
+    });
+  };
+
   SM.globalsInitialized = true;
 }

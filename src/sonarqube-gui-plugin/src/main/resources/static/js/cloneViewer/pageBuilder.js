@@ -9,5 +9,9 @@ SM.pageBuilder.cloneViewer = {};
 SM.pageBuilder.cloneViewer.build = function() {
   html = "heloka!";
 
-  SM.getRoot().html(html);
+  SM.getRoot().html([
+    '<div id="cloneClassSelector"></div>',
+    '<div id="cloneInstanceSelector"></div>',
+    '<div ></div>'
+  ].join(""));
 };
