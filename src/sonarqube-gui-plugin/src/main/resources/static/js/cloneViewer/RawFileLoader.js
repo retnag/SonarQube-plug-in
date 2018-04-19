@@ -26,15 +26,17 @@ SM.RawFileLoader = new (function() { // Singleton object
   };
 
   this.requestRawFile = function(filePath, callback) {
-  $.get(location.origin + '/api/sources/raw',
-    {key: filePath},
-    (function( data ) {
-      if(storeValue){
-        this.cache[filePath]=data;
-      }
-      
-      callback(data);
-    }).bind(this));
-};
-
+    if(storeValue && filePath in this.cache){
+      callback(this.cache[filePath]);
+      console.log("lézetik");
+    }
+    $.get(location.origin + '/api/sources/raw',
+      {key: filePath},
+      (function( data ) {
+        if(storeValue){
+          this.cache[filePath]=data;
+        }
+        callback(data);
+      }).bind(this));
+    };
 })();
