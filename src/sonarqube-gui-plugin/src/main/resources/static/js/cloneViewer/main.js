@@ -6,8 +6,40 @@ SM.cloneViewer = {};
  * time when the user opens the codeViewer page.
  * @return {void}
  */
-SM.cloneViewer.main = function() {
+SM.cloneViewer.init = function() {
 
+}
+
+SM.cloneViewer.main = function() {
   SM.pageBuilder.cloneViewer.build();
+  if (!SM.state[SM.options.component.key].hasOwnProperty("cloneViewer")) {
+    SM.state[SM.options.component.key].cloneViewer = {}; // create it the first time
+  }
+
+  var stateData = SM.state[SM.options.component.key].cloneViewer;
+
+  // dashboard data was never fetched before, so neither was the cloneViewer or the dashboard visited before
+  if(!SM.state[SM.options.component.key].initialized) {
+    SM.dashboard.fetch();
+    SM.waitForNDo(
+      function() {
+        if(SM.state[SM.options.component.key].clone) {
+          return true;
+        } else {
+          return false ;
+        }
+      },
+      function() {
+        stateData.numOfCloneClasses = SM.state[SM.options.component.key].clone.data.length;
+        stateData.selectedCloneClass = (stateData.numOfCloneClasses >= 1)? 0 : undefined;
+        stateData.selectedInstances = (stateData.numOfCloneClasses >= 1)? [0,1] : undefined;
+        SM.cloneViewer.init();
+      },
+      100
+    );
+    return;
+  } else {// dashboard or cloneViewer WAS visited and loaded before
+    SM.cloneViewer.init();
+  }
 
 }; // END OF function main
