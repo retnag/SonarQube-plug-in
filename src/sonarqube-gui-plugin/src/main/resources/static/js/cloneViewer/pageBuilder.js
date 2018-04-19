@@ -7,7 +7,7 @@
 SM.pageBuilder.cloneViewer = {};
 
 SM.pageBuilder.cloneViewer.build = function() {
-  html = "it loads, yay!";
+  html = "heloka!";
 
   SM.getRoot().html(html);
 };
