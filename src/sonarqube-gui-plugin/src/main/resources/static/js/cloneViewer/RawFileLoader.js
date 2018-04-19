@@ -1,5 +1,6 @@
 SM.RawFileLoader = new (function() { // Singleton object
   var self = this;
+  var storeValue = true;
   this.chache = {};
 
   this.fancyFunction = function(){
@@ -27,9 +28,14 @@ SM.RawFileLoader = new (function() { // Singleton object
   };
 
   this.requestRawFile = function(projectName, fileUrl, callback) {
+    var url = projectName+":"+fileUrl;
     $.get(location.origin + '/api/sources/raw',
-      {ey: projectName+":"+fileUrl},
+      {key: url},
       function( data ) {
+        if(storeValue){
+          SM.RawFileLoader.chache["rawFiles"] = {url:data}
+        }
+        
         callback(data);
       });
   };
