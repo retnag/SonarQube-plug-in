@@ -11,7 +11,7 @@ SM.RawFileLoader = new (function() { // Singleton object
    * @param  {Function} callback is called with the raw data passed as argument (string)
    * @return {void}              [description]
    */
-  this.requestRawFile = function(projectName, fileUrl, callback) {
+  this.requestRawFileOld = function(projectName, fileUrl, callback) {
   window.SonarRequest.request(location.origin + '/api/sources/raw')
     .setMethod("GET")
     .setData({
@@ -24,6 +24,14 @@ SM.RawFileLoader = new (function() { // Singleton object
         callback(res);
       })
     })
-};
+  };
+
+  this.requestRawFile = function(projectName, fileUrl, callback) {
+    $.get(location.origin + '/api/sources/raw',
+      {ey: projectName+":"+fileUrl},
+      function( data ) {
+        callback(data);
+      });
+  };
 
 })();
