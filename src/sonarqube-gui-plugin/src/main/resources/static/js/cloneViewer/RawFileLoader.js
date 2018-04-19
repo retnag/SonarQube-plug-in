@@ -3,7 +3,6 @@ SM.RawFileLoader = new (function() { // Singleton object
   var storeValue = true;
   this.cache = {};
 
-
   /**
    * Gets raw file data
    * @param  {string}   fileUrl  url of the file
