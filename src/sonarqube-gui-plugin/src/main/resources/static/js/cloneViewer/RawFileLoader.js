@@ -27,7 +27,6 @@ SM.RawFileLoader = new (function() { // Singleton object
   this.requestRawFile = function(filePath, callback) {
     if(storeValue && filePath in this.cache){
       callback(this.cache[filePath]);
-      console.log("lézetik");
     }
     $.get(location.origin + '/api/sources/raw',
       {key: filePath},
