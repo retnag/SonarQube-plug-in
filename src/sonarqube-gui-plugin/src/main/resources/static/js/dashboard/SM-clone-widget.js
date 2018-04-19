@@ -149,7 +149,7 @@ SM.CloneWidget = function(elem, options) {
       // there sould always be at least 2 instances per class
       var cloneInstance = cloneClass.cloneInstances[0];
       row += '<td class="sm-widget-line-icons"><i class="sm-icon-square sm-icon-clone-instance"></i></td>';
-      row += '<td class="sm-widget-row-instance">' + this.generateCloneViewerLink(cloneInstance) + '</td>';
+      row += '<td class="sm-widget-row-instance">' + this.generateCloneViewerLink(cloneInstance, i, 0) + '</td>';
       this.instanceMetrics.forEach(function(metric) {
         row += '<td>';
         row += SM.formatMetric(cloneClass.cloneInstances[0].cloneInstanceMetrics[metric.title], metric);
@@ -164,7 +164,7 @@ SM.CloneWidget = function(elem, options) {
         cloneInstance = cloneClass.cloneInstances[j];
         row = '<tr>';
         row += '<td class="sm-widget-line-icons"><i class="sm-icon-square sm-icon-clone-instance"></i></td>';
-        row += '<td class="sm-widget-row-instance">' + this.generateCloneViewerLink(cloneInstance) + '</td>';
+        row += '<td class="sm-widget-row-instance">' + this.generateCloneViewerLink(cloneInstance, i, j) + '</td>';
         this.instanceMetrics.forEach(function(metric) {
           // there sould always be at least 2 instances per class
           row += '<td>' + SM.formatMetric(cloneInstance.cloneInstanceMetrics[metric.title], metric) + '</td>';
@@ -266,16 +266,15 @@ SM.CloneWidget = function(elem, options) {
   this.setRowsStartOffset = this.setRowsStartOffset.bind(this);
 
 //új betöltő
-  this.generateCloneViewerLink = function(pack){
+  this.generateCloneViewerLink = function(pack, i, j){
     var anchor = pack.name;
-    var aLinkVege = 'my%3Avalami'; //ide nyilván más kell
     if (pack.positions[0]) {
       var url = 'http://' + window.location.host + '/project/extension/SourceMeterGUI/cloneViewer?id=' + SM.options.component.key;
-      var href = 'javascript:(function() {SM.options.router.push(\'' + url + '\', \'' + pack.displayedPath
+      var href = 'javascript:(function() {var stateData = SM.state[SM.options.component.key].cloneViewer; stateData.selectedCloneClass = ' + i + '; stateData.selectedInstances =' + j + '; SM.options.router.push(\'' + url + '\', \''
                  + '\', \'resizable,scrollbars,status\');})()';
       anchor = '<a href="' + href + '">' + pack.name + '</a>';
     }
-    // format: <a href="javascript:window.open('some.html', 'yourWindowName', 'width=200,height=150');">Test</a>
+
     return anchor;
   };
   this.generateCloneViewerLink = this.generateCloneViewerLink.bind(this);
@@ -306,6 +305,7 @@ SM.CloneWidget = function(elem, options) {
   this.generatePositionAnchorPopup = this.generatePositionAnchorPopup.bind(this);
 
   var self = this;
+
 
   var consts = {
     TEXT_NAME:'Name',
@@ -463,6 +463,10 @@ SM.CloneWidget = function(elem, options) {
   this.bindElement = this.bindElement.bind(this);
 
   this.init = function() {
+    if(typeof SM.state[SM.options.component.key].cloneViewer === "undefined"){
+      SM.state[SM.options.component.key].cloneViewer = {};
+    }
+
     var redraw = function() {
       if (self.elem !== null && jQuery.contains(document, self.elem[0])) {
         self.renderTable();
