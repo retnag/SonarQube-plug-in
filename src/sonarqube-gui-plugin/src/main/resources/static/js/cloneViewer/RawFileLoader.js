@@ -3,20 +3,18 @@ SM.RawFileLoader = new (function() { // Singleton object
   var storeValue = true;
   this.cache = {};
 
-  this.fancyFunction = function(){
-    console.log("fancí");
-  }
+
   /**
    * Gets raw file data
    * @param  {string}   fileUrl  url of the file
    * @param  {Function} callback is called with the raw data passed as argument (string)
    * @return {void}              [description]
    */
-  this.requestRawFileOld = function(projectName, fileUrl, callback) {
+  this.requestRawFileOld = function(filePath, callback) {
   window.SonarRequest.request(location.origin + '/api/sources/raw')
     .setMethod("GET")
     .setData({
-      key: projectName+":"+fileUrl
+      key: filePath
     })
     .submit()
     .then(function(response) {
@@ -27,17 +25,16 @@ SM.RawFileLoader = new (function() { // Singleton object
     })
   };
 
-  this.requestRawFile = function(projectName, fileUrl, callback) {
-    var url = projectName+":"+fileUrl;
-    $.get(location.origin + '/api/sources/raw',
-      {key: url},
-      function( data ) {
-        if(storeValue){
-          SM.RawFileLoader.chache["rawFiles"] = {url:data}
-        }
-        
-        callback(data);
-      });
-  };
+  this.requestRawFile = function(filePath, callback) {
+  $.get(location.origin + '/api/sources/raw',
+    {key: filePath},
+    (function( data ) {
+      if(storeValue){
+        this.cache[filePath]=data;
+      }
+      
+      callback(data);
+    }).bind(this));
+};
 
 })();
