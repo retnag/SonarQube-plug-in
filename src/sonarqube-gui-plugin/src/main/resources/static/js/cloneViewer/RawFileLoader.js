@@ -1,7 +1,7 @@
 SM.RawFileLoader = new (function() { // Singleton object
   var self = this;
   var storeValue = true;
-  this.chache = {};
+  this.cache = {};
 
   this.fancyFunction = function(){
     console.log("fancí");
