@@ -41,14 +41,16 @@ SM.getRoot().html([
   ].join(""));
 
 
-  
+
   var temp = [];
   SM.state[SM.options.component.key].clone.data.forEach(function(c){
   	temp.push("<option value="+c.name+"> "+c.name+"</option>");
   });
   $( "#cloneClassSelector" )
 	.append(temp.join(""))
-    .selectmenu();
+    .selectmenu()
+    .val(SM.state[SM.options.component.key].cloneViewer.selectedCloneClassName)
+    .selectmenu("refresh");
 
   var temp2 = [];
   SM.state[SM.options.component.key].clone.data.forEach(function(c){
@@ -58,6 +60,16 @@ SM.getRoot().html([
 	.append(temp2.join(""))
     .selectmenu();
 
+//
+//ide kéne kiváltani a cloneClassSelector selectmenuchange eseményt (76.sor)
+$( "#cloneInstanceSelector" )
+.selectmenu()
+.val(SM.state[SM.options.component.key].cloneViewer.selectedCloneInstanceName)
+.selectmenu("refresh");
+
+
+$( "#cloneInstanceSelector2" )
+  .selectmenu();
 
 
 //eventlisteners
@@ -71,8 +83,9 @@ SM.getRoot().html([
 		}
 	});
   $( "#cloneInstanceSelector" )
-	.append(temp11.join(""))
-    .selectmenu();
+    .find('option').remove().end()
+	  .append(temp11.join(""))
+    .selectmenu("destroy").selectmenu({ style: "dropdown" });
   }
  );
 
@@ -92,8 +105,9 @@ $( "#cloneClassSelector2" ).on( "selectmenuchange", function( event, ui ) {
 		}
 	});
   $( "#cloneInstanceSelector2" )
-	.append(temp12.join(""))
-    .selectmenu();
+    .find('option').remove().end()
+	  .append(temp12.join(""))
+    .selectmenu("destroy").selectmenu({ style: "dropdown" });
   }
  );
 
