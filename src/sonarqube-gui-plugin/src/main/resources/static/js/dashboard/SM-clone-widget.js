@@ -270,7 +270,7 @@ SM.CloneWidget = function(elem, options) {
     var anchor = pack.name;
     if (pack.positions[0]) {
       var url = 'http://' + window.location.host + '/project/extension/SourceMeterGUI/cloneViewer?id=' + SM.options.component.key;
-      var href = 'javascript:(function() {var stateData = SM.state[SM.options.component.key].cloneViewer; stateData.selectedCloneClass = ' + i + '; stateData.selectedInstances =' + j + '; SM.options.router.push(\'' + url + '\', \''
+      var href = 'javascript:(function() {var stateData = SM.state[SM.options.component.key]; stateData.cloneViewer.selectedCloneClass = ' + i + '; stateData.cloneViewer.selectedInstances =' + j + ';stateData.cloneViewer.selectedCloneClassName = stateData.clone.data[' + i + '].name; stateData.cloneViewer.selectedCloneInstanceName = stateData.clone.data[' + i + '].cloneInstances[' + j + '].name;  SM.options.router.push(\'' + url + '\', \''
                  + '\', \'resizable,scrollbars,status\');})()';
       anchor = '<a href="' + href + '">' + pack.name + '</a>';
     }
