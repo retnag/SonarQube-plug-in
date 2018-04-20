@@ -52,26 +52,26 @@ SM.getRoot().html([
 
   var temp2 = [];
   SM.state[SM.options.component.key].clone.data.forEach(function(c){
-  	temp.push("<option value="+c.name+"> "+c.name+"</option>");
+  	temp2.push("<option value="+c.name+"> "+c.name+"</option>");
   });
   $( "#cloneClassSelector2" )
-	.append(temp.join(""))
+	.append(temp2.join(""))
     .selectmenu();
 
 
 
 //eventlisteners
   $( "#cloneClassSelector" ).on( "selectmenuchange", function( event, ui ) {
-  var temp1 = [];
+  var temp11 = [];
   SM.state[SM.options.component.key].clone.data.forEach(function(x){
 		if(x.name === $('#cloneClassSelector').val()){
 			x.cloneInstances.forEach(function(c){
-  				temp1.push("<option value="+c.displayedPath+"> "+c.name+"</option>");
+  				temp11.push("<option value="+c.displayedPath+"> "+c.name+"</option>");
   			});
 		}
 	});
   $( "#cloneInstanceSelector" )
-	.append(temp1.join(""))
+	.append(temp11.join(""))
     .selectmenu();
   }
  );
@@ -83,16 +83,16 @@ SM.getRoot().html([
 	});
 
 $( "#cloneClassSelector2" ).on( "selectmenuchange", function( event, ui ) {
-  var temp1 = [];
+  var temp12 = [];
   SM.state[SM.options.component.key].clone.data.forEach(function(x){
 		if(x.name === $('#cloneClassSelector2').val()){
 			x.cloneInstances.forEach(function(c){
-  				temp1.push("<option value="+c.displayedPath+"> "+c.name+"</option>");
+  				temp12.push("<option value="+c.displayedPath+"> "+c.name+"</option>");
   			});
 		}
 	});
   $( "#cloneInstanceSelector2" )
-	.append(temp1.join(""))
+	.append(temp12.join(""))
     .selectmenu();
   }
  );
