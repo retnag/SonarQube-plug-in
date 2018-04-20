@@ -37,4 +37,21 @@ SM.RawFileLoader = new (function() { // Singleton object
         callback(data);
       }).bind(this));
     };
+
+    this.requestSliceOfRawFile = function(callback, filePath, fromLine, toLine){
+        this.requestRawFile(filePath, function(rawFile){
+            var temp = [];
+            var x = rawFile.split("\n");
+            if(fromLine === undefined){
+                fromLine = 0;
+            }
+            if(toLine === undefined || toLine > x.length){
+                toLine = x.length;
+            }
+            for(var i = fromLine;i<toLine;i++){
+                temp.push(x[i]);
+            }
+            callback(temp);
+        });
+    };
 })();
