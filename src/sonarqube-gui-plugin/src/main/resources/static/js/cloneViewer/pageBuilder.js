@@ -57,11 +57,15 @@ SM.pageBuilder.cloneViewer.build = function() {
         $( "#cloneInstanceSelector" )
             .find('option').remove().end()
 	        .append(cloneInstanceSelectorOptions.join(""))
-            .selectmenu("destroy").selectmenu({ style: "dropdown" });
+            .val(SM.state[SM.options.component.key].cloneViewer.selectedCloneInstanceName)
+            .selectmenu("refresh")
+            .trigger("selectmenuselect");
+
         $( "#cloneInstanceSelector2" )
             .find('option').remove().end()
 	        .append(cloneInstanceSelectorOptions.join(""))
             .selectmenu("destroy").selectmenu({ style: "dropdown" });
+
     });
 
     $( "#cloneInstanceSelector" ).on( "selectmenuselect", function( event, ui ) {
@@ -90,10 +94,4 @@ SM.pageBuilder.cloneViewer.build = function() {
         .selectmenu("refresh")
         .trigger("selectmenuselect");
 
-    $( "#cloneInstanceSelector" )
-        .selectmenu()
-        .val(SM.state[SM.options.component.key].cloneViewer.selectedCloneInstanceName)
-        .selectmenu("refresh")
-        .trigger("selectmenuselect");
-  
 };
