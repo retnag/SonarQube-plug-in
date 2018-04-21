@@ -66,11 +66,10 @@ SM.loader.src = {
       'lib/jasmine/jasmine.js',
       'lib/jasmine/jasmine-html.js',
       'lib/jasmine/boot.js',
-      'last.js',
-      'lib/diff2html/diff2html.js',
-      'lib/diff2html/diff2html-ui.js',
-      'lib/jsdiff/diff.js',
-      'js/strings.js'
+      'lib/diff2html/diff2html.min.js',
+      'lib/diff2html/diff2html-ui.min.js',
+      'lib/jsdiff/diff.min.js',
+      'last.js'
     ],
     styles: [
       'css/sm-widget.css',
@@ -81,7 +80,7 @@ SM.loader.src = {
       'css/jquery-ui/jquery-ui.structure.min.css',
       'css/jquery-ui/jquery-ui.theme.min.css',
       'lib/jasmine/jasmine.css',
-      'lib/diff2html/diff2html.css'
+      'lib/diff2html/diff2html.min.css'
     ]
   }
 };
