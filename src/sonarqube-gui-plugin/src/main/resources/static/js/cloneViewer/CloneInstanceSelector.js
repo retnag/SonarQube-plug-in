@@ -1,4 +1,4 @@
-SM.CloneInstanceSelector = function(HTMLelem, options){
+  SM.CloneInstanceSelector = function(HTMLelem, options){
   this.elem = null; // :DOMElement
   this.id; //: int (sorszám)
   this.cloneInstanceList; // :CloneClass[]
@@ -104,8 +104,9 @@ SM.CloneInstanceSelector = function(HTMLelem, options){
     return [
       '<div class="sm-cloneviewer-metric-container">',
       '  <div class="sm-cloneviewer-metric-icon-container"><i class="'+iconClass+'" style="'+iconStyle+'"></i></div>',
-      '  <div class="sm-cloneviewer-metric-title-container">'+metric.title+'</div>',
-      '  <div class="sm-cloneviewer-metric-value-container ' + valueClass + '">' + (Math.round(val * 100) / 100) + '</div>',
+      '  <div class="">'+metric.longName+'</div>'
+      '  <div class="sm-cloneviewer-metric-title-container">('+metric.title+'</div>',
+      '  <div class="sm-cloneviewer-metric-value-container ' + valueClass + '">' + (Math.round(val * 100) / 100) + ')</div>',
       '</div>'
     ].join("");
   };
