@@ -120,7 +120,7 @@
     this.selected = choice;
     this.renderMetrics();
     this.callBacks.onSelect.forEach(function(callback){
-      callback(choice);
+      callback(self.id);
     });
 
   };

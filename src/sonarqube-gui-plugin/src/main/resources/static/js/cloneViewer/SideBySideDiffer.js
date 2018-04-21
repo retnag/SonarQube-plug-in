@@ -11,9 +11,8 @@ SM.SideBySideDiffer = function(HTMLelem, options){
 
   this.init = function(HTMLelem,options){
     options = (options) ? options:  {};
-    this.text1 = options.text1 ? options.text1 : [];
-    this.text2 = options.text2 ? options.text2 : [];
-    this.callBacks = {};
+    this.text1 = options.text1 ? options.text1 : "";
+    this.text2 = options.text2 ? options.text2 : "";
 
     this.elem = HTMLelem;
     this.bindElement(HTMLelem);
@@ -36,18 +35,23 @@ SM.SideBySideDiffer = function(HTMLelem, options){
    * @return {void}
    */
   this.renderAll = function(){
-    this.elem.html("");
-  };
-
-  this.addCallBack = function(event, callback){
-    if(typeof this.callBacks[event] === "undefined") throw "this event is undefined for CloneClassSelector";
-    this.callBacks[event].push(callback);
+    var diff = JsDiff.createPatch('fileName', this.text1, this.text2, 'oldHeader', 'newHeader');
+    var html = Diff2Html.getPrettySideBySideHtmlFromDiff(diff, {
+      wordByWord: true,
+      outputFormat: 'side-by-side'
+    });
+    this.elem.html(html);
+    $(".d2h-file-header").html("");
   };
 
   this.setText1 = function (str){
+    this.text1 = str;
+    this.renderAll();
   };
 
   this.setText2 = function (str){
+    this.text2 = str;
+    this.renderAll();
   };
 
   this.bindElement = function(elem) {

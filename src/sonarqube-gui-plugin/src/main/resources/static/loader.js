@@ -55,6 +55,9 @@ SM.loader.src = {
       'js/dashboard/main.js',
       'js/help/pageBuilder.js',
       'js/help/main.js',
+      'lib/diff2html/diff2html.min.js',
+      'lib/diff2html/diff2html-ui.min.js',
+      'lib/jsdiff/diff.min.js',
       'js/cloneViewer/pageBuilder.js',
       'js/cloneViewer/main.js',
       'js/cloneViewer/RawFileLoader.js',
@@ -65,9 +68,6 @@ SM.loader.src = {
       'lib/jasmine/jasmine.js',
       'lib/jasmine/jasmine-html.js',
       'lib/jasmine/boot.js',
-      'lib/diff2html/diff2html.min.js',
-      'lib/diff2html/diff2html-ui.min.js',
-      'lib/jsdiff/diff.min.js',
       'last.js'
     ],
     styles: [

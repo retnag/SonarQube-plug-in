@@ -20,13 +20,14 @@ SM.RawFileLoader = new (function() { // Singleton object
       response.text().then(function(res){
         //visszaadja a fájlnak a szövegét stringben
         callback(res);
-      })
-    })
+      });
+    });
   };
 
   this.requestRawFile = function(filePath, callback) {
     if(storeValue && filePath in this.cache){
       callback(this.cache[filePath]);
+      return;
     }
     $.get(location.origin + '/api/sources/raw',
       {key: filePath},

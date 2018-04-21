@@ -12,6 +12,7 @@ SM.CloneViewer = function(){
 
   this.selectedCloneClass;
   this.selectedInstances;
+  this.codeBrowser;
 
   var self = this;
 
@@ -22,7 +23,10 @@ SM.CloneViewer = function(){
 
     this.cloneClassSelector = new SM.CloneClassSelector(
       $("#cloneClassSelectorContainer"),
-      {cloneClassList: SM.state[SM.options.component.key].clone.data}
+      {
+        cloneClassList: SM.state[SM.options.component.key].clone.data,
+        selected: 0
+      }
     );
     this.cloneClassSelector.addCallBack("onSelect", this.handleCloneClassChange);
 
@@ -39,6 +43,7 @@ SM.CloneViewer = function(){
       );
       this.cloneInstanceSelectors[i].addCallBack("onSelect", this.handleCloneInstanceChange);
     }
+
     this.codeBrowser = new SM.SideBySideDiffer($("#cloneViewerConatiner"), {});
   };
 
@@ -56,6 +61,7 @@ SM.CloneViewer = function(){
    * @return {void}
    */
   this.handleCloneClassChange = function(selection){
+console.log("handleCloneClassChange");
     this.selectedCloneClass = selection;
     this.cloneInstanceSelectors.forEach(function(instanceSelector){
       var instanceList = self.cloneClassSelector.cloneClassList[self.selectedCloneClass].cloneInstances;
@@ -70,10 +76,11 @@ SM.CloneViewer = function(){
    * @return {void}
    */
   this.handleCloneInstanceChange = function(id){
+console.log("handleCloneInstanceChange");
     var instanceSelector = this.cloneInstanceSelectors[id];
     var selectedInstance = instanceSelector.cloneInstanceList[instanceSelector.selected];
     var func = function(text){
-      self.codeBrowser["setText"+(id+1)](text);
+      self.codeBrowser["setText"+(id+1)](text.join("\n"));
     };
     var start = selectedInstance.positions[0].line;
     var stop = start + selectedInstance.cloneInstanceMetrics.CLLOC;

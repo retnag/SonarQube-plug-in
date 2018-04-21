@@ -36,7 +36,7 @@ SM.CloneClassSelector = function(HTMLelem, options){
     });
     cloneClassSelectorSkeleton.push('</select>');
     this.elem.append(cloneClassSelectorSkeleton.join(""));
-    
+
     this.renderMetrics();
 
     // make selectmenu
@@ -87,10 +87,14 @@ SM.CloneClassSelector = function(HTMLelem, options){
     var div = $('#cloneClassMetricsContainer');
     div.html("");
     var html = [];
-    var metrics = this.cloneClassList[this.selected].cloneClassMetrics;
-    for(var metric in metrics){
-      html.push(this.getFormatedMetric(metrics[metric],metric));
-    };
+    // console.log(this)
+    // console.log(this.cloneClassList)
+    // console.log(this.selected)
+    // console.log(this.cloneClassList[this.selected])
+    // var metrics = this.cloneClassList[this.selected].cloneClassMetrics;
+    // for(var metric in metrics){
+    //   html.push(this.getFormatedMetric(metrics[metric],metric));
+    // };
     html.push();
 
     div.append(html.join(""));
