@@ -58,6 +58,9 @@ SM.loader.src = {
       'js/cloneViewer/pageBuilder.js',
       'js/cloneViewer/main.js',
       'js/cloneViewer/RawFileLoader.js',
+      'lib/jasmine/jasmine.js',
+      'lib/jasmine/jasmine-html.js',
+      'lib/jasmine/boot.js',
       'last.js'
     ],
     styles: [
@@ -68,6 +71,7 @@ SM.loader.src = {
       'css/jquery-ui/jquery-ui.min.css',
       'css/jquery-ui/jquery-ui.structure.min.css',
       'css/jquery-ui/jquery-ui.theme.min.css',
+      'lib/jasmine/jasmine.css'
     ]
   }
 };
