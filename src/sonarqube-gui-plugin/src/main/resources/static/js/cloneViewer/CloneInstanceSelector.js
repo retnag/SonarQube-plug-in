@@ -43,6 +43,13 @@ SM.CloneInstanceSelector = function(HTMLelem, options){
         html.push("<option value=" + i + "> " + cloneInstance.name + "</option>");
     });
     html.push('</select>');
+    html.push('<div id="cloneInstanceMeticsContainer'+this.id+'">');
+    var metrics = this.cloneInstanceList[this.selected].cloneInstanceMetrics;
+    //var metrics = SM.state["GB"].clone.data[0].cloneInstances[0].cloneInstanceMetrics;
+    for(var metric in metrics){
+      html.push(this.getFormatedMetric(metrics[metric],metric));
+    });
+    html.push('</div>');
     html.push('</div>');
     this.elem.append(html.join(""));
 
@@ -57,6 +64,37 @@ SM.CloneInstanceSelector = function(HTMLelem, options){
     this.callBacks[event].push(callback);
   };
 
+  this.getFormatedMetric = function(val, metric) {
+    if (val === undefined) {
+      return '-';
+    }
+    SM.state[SM.options.component.key].clone.instanceMetrics.forEach(function(tempMetric){
+      if(metric === tempMetric.title){
+        metric = tempMetric;
+      }
+    });
+    metric = metric || { direction: 0 };
+    var greenClass = "sm-widget-threshold-green";
+    var redClass = "sm-widget-threshold-red";
+    var faCheckCircle = "fa fa-check-circle";
+    var faExclamationCircle = "fa fa-exclamation-circle";
+    var valueClass = "";
+    var iconClass = "";
+    var iconStyle = "";
+    if (metric.baseline === undefined) {
+    } else if (metric.direction === -1) { // 1:lesser=worse && larger=better;
+      valueClass = (val <= metric.baseline) ? greenClass : redClass;
+      iconClass = (val <= metric.baseline) ? faCheckCircle : faExclamationCircle;
+      iconStyle = (val <= metric.baseline) ? "color:green" : "color:red";
+    } else if (metric.direction === 1) { // -1: lesser=better && larger=worse
+      valueClass = (val >= metric.baseline) ? greenClass : redClass;
+      iconClass = (val >= metric.baseline) ? faCheckCircle : faExclamationCircle;
+      iconStyle = (val >= metric.baseline) ? "color:green" : "color:red";
+    }
+
+    return '<div><div><i class="'+iconClass+'" style="'+iconStyle+'"></i></div><div>'+metric.title+'</div><div class="' + valueClass + '">' + (Math.round(val * 100) / 100) + '</div></div>';
+  };
+
   /**
    * selects a CloneClass, and calls everything that needs to update its state.
    * @param  {int} choice    the id of the cloneclass in the this.CloneClassList
@@ -64,6 +102,10 @@ SM.CloneInstanceSelector = function(HTMLelem, options){
    */
   this.select = function (choice){
     this.selected = choice;
+    this.callBacks.onSelect.forEach(function(callback){
+      callback(choice);
+    });
+
   };
 
   this.onCloneInstanceChange = function(event, ui){
