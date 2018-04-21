@@ -42,7 +42,8 @@ SM.loader.src = {
       "https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"
     ],
     styles: [ // these stylesheets will be loaded
-      "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+      "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css",
+      "https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.css"
     ]
   },
   local: { // these get baseUrl prepended automatically
@@ -65,7 +66,11 @@ SM.loader.src = {
       'lib/jasmine/jasmine.js',
       'lib/jasmine/jasmine-html.js',
       'lib/jasmine/boot.js',
-      'last.js'
+      'last.js',
+      'lib/diff2html/diff2html.js',
+      'lib/diff2html/diff2html-ui.js',
+      'lib/jsdiff/diff.js',
+      'js/strings.js'
     ],
     styles: [
       'css/sm-widget.css',
@@ -75,7 +80,8 @@ SM.loader.src = {
       'css/jquery-ui/jquery-ui.min.css',
       'css/jquery-ui/jquery-ui.structure.min.css',
       'css/jquery-ui/jquery-ui.theme.min.css',
-      'lib/jasmine/jasmine.css'
+      'lib/jasmine/jasmine.css',
+      'lib/diff2html/diff2html.css'
     ]
   }
 };
