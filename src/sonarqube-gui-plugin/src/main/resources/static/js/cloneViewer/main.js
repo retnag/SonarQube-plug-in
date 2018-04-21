@@ -7,11 +7,12 @@ SM.cloneViewer = {};
  * @return {void}
  */
 SM.cloneViewer.init = function() {
-
+  SM.pageBuilder.cloneViewer.build();
+  SM.cloneViewer.o = new SM.CloneViewer();
 }
 
 SM.cloneViewer.main = function() {
-  SM.pageBuilder.cloneViewer.build();
+
   if (!SM.state[SM.options.component.key].hasOwnProperty("cloneViewer")) {
     SM.state[SM.options.component.key].cloneViewer = {}; // create it the first time
   }

@@ -7,6 +7,12 @@
 SM.pageBuilder.cloneViewer = {};
 
 SM.pageBuilder.cloneViewer.build = function() {
+    SM.getRoot().html([
+        '<div id="cloneClassSelectorContainer"></div>',
+        '<div id="cloneInstanceSelectorContainer"></div>',
+        '<div id="cloneViewerConatiner"></div>',
+    ].join(""));
+return;
     var cloneClassSelectorSkeleton = [
       '<select id="cloneClassSelector">',
       '</select>'
@@ -22,17 +28,6 @@ SM.pageBuilder.cloneViewer.build = function() {
       '</select>'
     ].join("\n");
 
-    SM.getRoot().html([
-        '<div id="cloneClassSelectorContainer">',
-        '<div>CloneClassSelector: '+cloneClassSelectorSkeleton+'</div>',
-        '<div>CloneInstanceSelector: '+cloneInstanceSelectorSkeleton+'</div>',
-        '<div id="cloneViewer"></div>',
-        '</div>',
-        '<div id="cloneClassSelectorContainer2">',
-        '<div>CloneInstanceSelector: '+cloneInstanceSelector2Skeleton+'</div>',
-        '<div id="cloneViewer2"></div>',
-        '</div>'
-    ].join(""));
 
     //
     $( "#cloneClassSelector" )
@@ -87,17 +82,16 @@ SM.pageBuilder.cloneViewer.build = function() {
    		},$('#cloneInstanceSelector').val(),fromLine,toLine);
 	});
 
-
     $( "#cloneInstanceSelector2" ).on( "selectmenuselect", function( event, ui ) {
         var fromLine = 0;
         var toLine = 0;
         SM.state[SM.options.component.key].clone.data.forEach(function(x){
             if(x.name === $('#cloneClassSelector').val()){
-			    x.cloneInstances.forEach(function(c){
+			        x.cloneInstances.forEach(function(c){
   				    if(c.name === $('#cloneInstanceSelector2').find(":selected").text()){
-                        fromLine = c.positions[0].line;
-                        toLine = c.cloneInstanceMetrics.CLLOC+c.positions[0].line;
-                    }
+                fromLine = c.positions[0].line;
+                toLine = c.cloneInstanceMetrics.CLLOC+c.positions[0].line;
+              }
   			    });
 		    }
         });
