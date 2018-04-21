@@ -43,7 +43,6 @@ SM.loader.src = {
     ],
     styles: [ // these stylesheets will be loaded
       "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css",
-      "https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.css"
     ]
   },
   local: { // these get baseUrl prepended automatically
@@ -80,7 +79,8 @@ SM.loader.src = {
       'css/jquery-ui/jquery-ui.structure.min.css',
       'css/jquery-ui/jquery-ui.theme.min.css',
       'lib/jasmine/jasmine.css',
-      'lib/diff2html/diff2html.min.css'
+      'lib/diff2html/diff2html.min.css',
+      'css/cloneViewer.css'
     ]
   }
 };
