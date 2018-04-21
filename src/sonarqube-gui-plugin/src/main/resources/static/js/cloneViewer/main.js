@@ -8,7 +8,7 @@ SM.cloneViewer = {};
  */
 SM.cloneViewer.init = function() {
   SM.pageBuilder.cloneViewer.build();
-  SM.cloneViewer.o = new SM.CloneViewer();
+  SM.state[SM.options.component.key].cloneViewer.data = new SM.CloneViewer();
 }
 
 SM.cloneViewer.main = function() {

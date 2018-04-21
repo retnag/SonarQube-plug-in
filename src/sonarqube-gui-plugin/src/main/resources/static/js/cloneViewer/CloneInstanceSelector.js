@@ -20,7 +20,6 @@ SM.CloneInstanceSelector = function(HTMLelem, options){
 
     this.elem = HTMLelem;
     this.bindElement(HTMLelem);
-
     this.select(this.selected);
     this.renderAll();
 
@@ -37,8 +36,7 @@ SM.CloneInstanceSelector = function(HTMLelem, options){
     // put together the selectors html string
     var html = [];
 
-    html.push('<div id="cloneInstanceSelector' + this.id + '">');
-    html.push('<select id="c' + this.id + '">')
+    html.push('<select id="selectmenu">')
     this.cloneInstanceList.forEach(function(cloneInstance, i){
         html.push("<option value=" + i + "> " + cloneInstance.name + "</option>");
     });
@@ -48,14 +46,14 @@ SM.CloneInstanceSelector = function(HTMLelem, options){
     //var metrics = SM.state["GB"].clone.data[0].cloneInstances[0].cloneInstanceMetrics;
     for(var metric in metrics){
       html.push(this.getFormatedMetric(metrics[metric],metric));
-    });
+    };
     html.push('</div>');
-    html.push('</div>');
+
     this.elem.append(html.join(""));
 
     // make selectmenu
-    $("#cloneInstanceSelector" + this.id).selectmenu();
-    $("#cloneInstanceSelector" + this.id).val(this.selected).selectmenu("refresh");
+    $("#cloneInstanceSelector" + this.id + " #selectmenu").selectmenu();
+    $("#cloneInstanceSelector" + this.id + " #selectmenu").val(this.selected).selectmenu("refresh");
 
   };
 

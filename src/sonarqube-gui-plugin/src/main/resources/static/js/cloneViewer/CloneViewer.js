@@ -13,32 +13,33 @@ SM.CloneViewer = function(){
   this.selectedCloneClass;
   this.selectedInstances;
 
+  var self = this;
+
   this.init = function(){
 
-    this.selectedCloneClass = SM.state.QuizOjee.cloneViewer.selectedCloneClass;
-    this.selectedInstances = SM.state.QuizOjee.cloneViewer.selectedInstances;
+    this.selectedCloneClass = SM.state[SM.options.component.key].cloneViewer.selectedCloneClass;
+    this.selectedInstances = SM.state[SM.options.component.key].cloneViewer.selectedInstances;
 
     this.cloneClassSelector = new SM.CloneClassSelector(
       $("#cloneClassSelectorContainer"),
-      {cloneClassList: SM.state.QuizOjee.clone.data}
+      {cloneClassList: SM.state[SM.options.component.key].clone.data}
     );
     this.cloneClassSelector.addCallBack("onSelect", this.handleCloneClassChange);
 
     this.cloneInstanceSelectors = [];
     for(var i = 0; i < this.maxInstances; i++){
-      this.cloneInstanceSelectors[i] = new SM.CloneInstanceSelector(
-        $("#cloneInstanceSelectorContainer"),
+      $("#cloneInstanceSelectorContainer").append('<div id="cloneInstanceSelector' + i + '"></div>');
+        var instanceList = this.cloneClassSelector.cloneClassList[this.selectedCloneClass].cloneInstances;
+        this.cloneInstanceSelectors[i] = new SM.CloneInstanceSelector(
+        $("#cloneInstanceSelector" + i),
         {
-          cloneInstanceList: this.cloneClassSelector[(this.selectedInstances[i])? this.selectedInstances[i] : 0],
+          cloneInstanceList: instanceList,
           id: i
         }
       );
-      console.log(this.cloneInstanceSelectors[i]);
       this.cloneInstanceSelectors[i].addCallBack("onSelect", this.handleCloneInstanceChange);
     }
     this.codeBrowser = new SM.SideBySideDiffer($("#cloneViewerConatiner"), {});
-
-
   };
 
   /**
@@ -54,8 +55,13 @@ SM.CloneViewer = function(){
    * is called by CloneClassSelector
    * @return {void}
    */
-  this.handleCloneClassChange = function(){
-
+  this.handleCloneClassChange = function(selection){
+    this.selectedCloneClass = selection;
+    this.cloneInstanceSelectors.forEach(function(instanceSelector){
+      var instanceList = self.cloneClassSelector.cloneClassList[self.selectedCloneClass].cloneInstances;
+      instanceSelector.select(0);
+      instanceSelector.renderAll();
+    });
   };
   /**
    * is called by CloneInstanceSelector
@@ -84,4 +90,3 @@ SM.CloneViewer = function(){
   this.init();
 };
 
-SM.cloneViewer.main()

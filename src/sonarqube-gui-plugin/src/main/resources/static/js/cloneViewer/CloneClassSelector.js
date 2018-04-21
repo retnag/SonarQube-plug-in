@@ -57,7 +57,7 @@ SM.CloneClassSelector = function(HTMLelem, options){
 
     this.selected = choice;
     this.callBacks.onSelect.forEach(function(callback){
-      callback();
+      callback(choice);
     });
 
   };
