@@ -179,7 +179,9 @@ SM.MetricLoader = new (function() { // Singleton object
         var query = parsedHTML[met.langID].filter('h4#' + met.title);
         if (query.length > 0) {
           met.helpText = query[0].outerHTML;
-
+          var longname = query[0].outerText.split(" ");
+          longname.splice(longname.length-1, longname.length-1);
+          met.longName += longname.join(" ");       
           query.nextUntil('h4, h3, h2', '*').each(
             function(a,t) {
               met.helpText += t.outerHTML;

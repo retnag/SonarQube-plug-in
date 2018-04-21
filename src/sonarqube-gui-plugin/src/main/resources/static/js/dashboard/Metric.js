@@ -35,6 +35,7 @@ SM.Metric = function(mTitle, langID, scope) {
   this.langID = langID || undefined;
   this.scope = scope || undefined;
   this.helpText = "loading description...";
+  this.longName = "";
 
   this.getUniqueKey = function() {
     return this.langID + "." + this.scope.toLowerCase() + "." + this.title;
