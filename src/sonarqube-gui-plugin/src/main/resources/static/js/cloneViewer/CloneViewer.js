@@ -70,7 +70,19 @@ SM.CloneViewer = function(){
    * @return {void}
    */
   this.handleCloneInstanceChange = function(id){
-
+    var instanceSelector = this.cloneInstanceSelectors[id];
+    var selectedInstance = instanceSelector.cloneInstanceList[instanceSelector.selected];
+    var func = function(text){
+      self.codeBrowser["setText"+(id+1)](text);
+    };
+    var start = selectedInstance.positions[0].line;
+    var stop = start + selectedInstance.cloneInstanceMetrics.CLLOC;
+    var text = SM.RawFileLoader.requestSliceOfRawFile(
+      func,
+      selectedInstance.displayedPath,
+      start,
+      stop
+    );
   };
 
   this.bindElement = function(elem) {
