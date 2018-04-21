@@ -7,6 +7,8 @@ SM.CloneInstanceSelector = function(HTMLelem, options){
   this.parent; // :CloneClassSelector
   this.callBacks; // :map<string,function>
 
+  var self = this;
+
   this.init = function(HTMLelem,options){
 
     this.id = options.id ? options.id : 0;
@@ -32,7 +34,6 @@ SM.CloneInstanceSelector = function(HTMLelem, options){
    */
   this.renderAll = function(){
     this.elem.html("");
-
     // put together the selectors html string
     var html = [];
 
@@ -41,20 +42,30 @@ SM.CloneInstanceSelector = function(HTMLelem, options){
         html.push("<option value=" + i + "> " + cloneInstance.name + "</option>");
     });
     html.push('</select>');
-    html.push('<div id="cloneInstanceMeticsContainer'+this.id+'">');
-    var metrics = this.cloneInstanceList[this.selected].cloneInstanceMetrics;
-    //var metrics = SM.state["GB"].clone.data[0].cloneInstances[0].cloneInstanceMetrics;
-    for(var metric in metrics){
-      html.push(this.getFormatedMetric(metrics[metric],metric));
-    };
-    html.push('</div>');
+    html.push('<div id="cloneInstanceMetricsContainer'+this.id+'"></div>');
 
     this.elem.append(html.join(""));
+
+    this.renderMetrics();
 
     // make selectmenu
     $("#cloneInstanceSelector" + this.id + " #selectmenu").selectmenu();
     $("#cloneInstanceSelector" + this.id + " #selectmenu").val(this.selected).selectmenu("refresh");
 
+  };
+
+  this.renderMetrics = function(){
+    var div = $('#cloneInstanceMetricsContainer'+this.id);
+    div.html("");
+    var html = [];
+    var metrics = this.cloneInstanceList[this.selected].cloneInstanceMetrics;
+    //var metrics = SM.state["GB"].clone.data[0].cloneInstances[0].cloneInstanceMetrics;
+    for(var metric in metrics){
+      html.push(this.getFormatedMetric(metrics[metric],metric));
+    };
+    html.push();
+
+    div.append(html.join(""));
   };
 
   this.addCallBack = function(event, callback){
@@ -90,7 +101,13 @@ SM.CloneInstanceSelector = function(HTMLelem, options){
       iconStyle = (val >= metric.baseline) ? "color:green" : "color:red";
     }
 
-    return '<div><div><i class="'+iconClass+'" style="'+iconStyle+'"></i></div><div>'+metric.title+'</div><div class="' + valueClass + '">' + (Math.round(val * 100) / 100) + '</div></div>';
+    return [
+      '<div class="sm-cloneviewer-metric-container">',
+      '  <div class="sm-cloneviewer-metric-icon-container"><i class="'+iconClass+'" style="'+iconStyle+'"></i></div>',
+      '  <div class="sm-cloneviewer-metric-title-container">'+metric.title+'</div>',
+      '  <div class="sm-cloneviewer-metric-value-container ' + valueClass + '">' + (Math.round(val * 100) / 100) + '</div>',
+      '</div>'
+    ].join("");
   };
 
   /**
@@ -100,6 +117,7 @@ SM.CloneInstanceSelector = function(HTMLelem, options){
    */
   this.select = function (choice){
     this.selected = choice;
+    this.renderMetrics();
     this.callBacks.onSelect.forEach(function(callback){
       callback(choice);
     });
@@ -108,9 +126,6 @@ SM.CloneInstanceSelector = function(HTMLelem, options){
 
   this.onCloneInstanceChange = function(event, ui){
     this.select(ui.item.index);
-    this.callBacks.onSelect.forEach(function(callback){
-      callback(this.id);
-    }).bind(this);
   };
 
   this.bindElement = function(elem) {
@@ -125,7 +140,7 @@ SM.CloneInstanceSelector = function(HTMLelem, options){
   };
 
   this.registerEvents = function() {
-    this.elem.on("selectmenuselect", "#cloneInstanceSelector" + this.id, this.onCloneInstanceChange);
+    this.elem.on("selectmenuselect", this.onCloneInstanceChange);
   };
 
   SM.bindFunctions(this);

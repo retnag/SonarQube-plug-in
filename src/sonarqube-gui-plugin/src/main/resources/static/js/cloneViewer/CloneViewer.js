@@ -59,6 +59,7 @@ SM.CloneViewer = function(){
     this.selectedCloneClass = selection;
     this.cloneInstanceSelectors.forEach(function(instanceSelector){
       var instanceList = self.cloneClassSelector.cloneClassList[self.selectedCloneClass].cloneInstances;
+      instanceSelector.cloneInstanceList = instanceList;
       instanceSelector.select(0);
       instanceSelector.renderAll();
     });
