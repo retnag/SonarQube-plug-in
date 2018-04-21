@@ -36,6 +36,8 @@ SM.CloneClassSelector = function(HTMLelem, options){
     });
     cloneClassSelectorSkeleton.push('</select>');
     this.elem.append(cloneClassSelectorSkeleton.join(""));
+    
+    this.renderMetrics();
 
     // make selectmenu
     $("#cloneClassSelector").selectmenu();
@@ -80,6 +82,59 @@ SM.CloneClassSelector = function(HTMLelem, options){
   this.registerEvents = function() {
     this.elem.on("selectmenuselect", "#cloneClassSelector", this.onCloneClassChange);
   };
+
+  this.renderMetrics = function(){
+    var div = $('#cloneClassMetricsContainer');
+    div.html("");
+    var html = [];
+    var metrics = this.cloneClassList[this.selected].cloneClassMetrics;
+    for(var metric in metrics){
+      html.push(this.getFormatedMetric(metrics[metric],metric));
+    };
+    html.push();
+
+    div.append(html.join(""));
+  };
+
+
+  this.getFormatedMetric = function(val, metric) {
+    if (val === undefined) {
+      return '-';
+    }
+    SM.state[SM.options.component.key].clone.classMetrics.forEach(function(tempMetric){
+      if(metric === tempMetric.title){
+        metric = tempMetric;
+      }
+    });
+    metric = metric || { direction: 0 };
+    var greenClass = "sm-widget-threshold-green";
+    var redClass = "sm-widget-threshold-red";
+    var faCheckCircle = "fa fa-check-circle";
+    var faExclamationCircle = "fa fa-exclamation-circle";
+    var valueClass = "";
+    var iconClass = "";
+    var iconStyle = "";
+    if (metric.baseline === undefined) {
+    } else if (metric.direction === -1) { // 1:lesser=worse && larger=better;
+      valueClass = (val <= metric.baseline) ? greenClass : redClass;
+      iconClass = (val <= metric.baseline) ? faCheckCircle : faExclamationCircle;
+      iconStyle = (val <= metric.baseline) ? "color:green" : "color:red";
+    } else if (metric.direction === 1) { // -1: lesser=better && larger=worse
+      valueClass = (val >= metric.baseline) ? greenClass : redClass;
+      iconClass = (val >= metric.baseline) ? faCheckCircle : faExclamationCircle;
+      iconStyle = (val >= metric.baseline) ? "color:green" : "color:red";
+    }
+
+    return [
+      '<div class="sm-cloneviewer-metric-container">',
+      '  <div class="sm-cloneviewer-metric-icon-container"><i class="'+iconClass+'" style="'+iconStyle+'"></i></div>',
+      '  <div class="">'+metric.longName+'</div>',
+      '  <div class="sm-cloneviewer-metric-title-container">('+metric.title+'</div>,',
+      '  <div class="sm-cloneviewer-metric-value-container ' + valueClass + '">' + (Math.round(val * 100) / 100) + ')</div>',
+      '</div>'
+    ].join("");
+  };
+
 
   SM.bindFunctions(this);
   this.init(HTMLelem,options);
