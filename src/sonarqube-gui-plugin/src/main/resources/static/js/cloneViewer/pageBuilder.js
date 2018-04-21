@@ -50,13 +50,14 @@ SM.pageBuilder.cloneViewer.build = function() {
         SM.state[SM.options.component.key].clone.data.forEach(function(x){
 		    if(x.name === $('#cloneClassSelector').val()){
 			    x.cloneInstances.forEach(function(c){
-  				    cloneInstanceSelectorOptions.push("<option value="+c.displayedPath+"> "+c.name+"</option>");
+  				    cloneInstanceSelectorOptions.push("<option value="+c.displayedPath+">"+c.name+"</option>");
   			    });
 		    }
         });
         $( "#cloneInstanceSelector" )
             .find('option').remove().end()
 	        .append(cloneInstanceSelectorOptions.join(""))
+            .selectmenu("refresh")
             .val(SM.state[SM.options.component.key].cloneViewer.selectedCloneInstanceName)
             .selectmenu("refresh")
             .trigger("selectmenuselect");
@@ -64,27 +65,51 @@ SM.pageBuilder.cloneViewer.build = function() {
         $( "#cloneInstanceSelector2" )
             .find('option').remove().end()
 	        .append(cloneInstanceSelectorOptions.join(""))
-            .selectmenu("destroy").selectmenu({ style: "dropdown" });
+            .selectmenu("refresh");
 
     });
 
     $( "#cloneInstanceSelector" ).on( "selectmenuselect", function( event, ui ) {
+        var fromLine = 0;
+        var toLine = 0;
+        SM.state[SM.options.component.key].clone.data.forEach(function(x){
+            if(x.name === $('#cloneClassSelector').val()){
+			    x.cloneInstances.forEach(function(c){
+  				    if(c.name === $('#cloneInstanceSelector').find(":selected").text()){
+                        fromLine = c.positions[0].line;
+                        toLine = c.cloneInstanceMetrics.CLLOC+c.positions[0].line;
+                    }
+  			    });
+		    }
+        });
    		SM.RawFileLoader.requestSliceOfRawFile(function(rawFileData){
 			$( "#cloneViewer" ).html(rawFileData.join("<br>"));
-   		},$('#cloneInstanceSelector').val());
+   		},$('#cloneInstanceSelector').val(),fromLine,toLine);
 	});
 
 
     $( "#cloneInstanceSelector2" ).on( "selectmenuselect", function( event, ui ) {
+        var fromLine = 0;
+        var toLine = 0;
+        SM.state[SM.options.component.key].clone.data.forEach(function(x){
+            if(x.name === $('#cloneClassSelector').val()){
+			    x.cloneInstances.forEach(function(c){
+  				    if(c.name === $('#cloneInstanceSelector2').find(":selected").text()){
+                        fromLine = c.positions[0].line;
+                        toLine = c.cloneInstanceMetrics.CLLOC+c.positions[0].line;
+                    }
+  			    });
+		    }
+        });
    		SM.RawFileLoader.requestSliceOfRawFile(function(rawFileData){
 			$( "#cloneViewer2" ).html(rawFileData.join("<br>"));
-   		},$('#cloneInstanceSelector2').val());
+   		},$('#cloneInstanceSelector2').val(),fromLine,toLine);
 	});
 
     //
     var cloneClassSelectorOptions = [];
     SM.state[SM.options.component.key].clone.data.forEach(function(c){
-  	    cloneClassSelectorOptions.push("<option value="+c.name+"> "+c.name+"</option>");
+  	    cloneClassSelectorOptions.push("<option value="+c.name+">"+c.name+"</option>");
     });
 
     $( "#cloneClassSelector" )
