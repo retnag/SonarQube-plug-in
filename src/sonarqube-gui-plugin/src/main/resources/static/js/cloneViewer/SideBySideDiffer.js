@@ -20,6 +20,15 @@ SM.SideBySideDiffer = function(HTMLelem, options){
     this.renderAll();
 
   };
+/*
+  this.diff = JsDiff.createPatch('fileName', this.setText1, this.setText2, 'oldHeader', 'newHeader');
+
+  this.html = Diff2Html.getPrettySideBySideHtmlFromDiff(this.diff, {
+      wordByWord: true,
+      // outputFormat: 'line-by-line',
+      outputFormat: 'side-by-side'
+    });
+*/
 
   /**
    * Generates HTML of dependant of the current state of the object.
@@ -58,4 +67,3 @@ SM.SideBySideDiffer = function(HTMLelem, options){
   SM.bindFunctions(this);
   this.init(HTMLelem,options);
 };
-
