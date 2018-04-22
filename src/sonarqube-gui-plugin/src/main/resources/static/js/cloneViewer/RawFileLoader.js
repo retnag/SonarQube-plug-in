@@ -49,7 +49,7 @@ SM.RawFileLoader = new (function() { // Singleton object
             if(toLine === undefined || toLine > x.length){
                 toLine = x.length;
             }
-            for(var i = fromLine;i<toLine;i++){
+            for(var i = fromLine-1; i < toLine-1; i++){
                 temp.push(x[i]);
             }
             callback(temp);

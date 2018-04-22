@@ -1,5 +1,54 @@
 SM.cloneViewer = {};
 
+SM.cloneViewer.getFormatedMetric = function(val, metric) {
+  if (val === undefined) {
+    return '-';
+  }
+
+  var greenClass = "sm-widget-threshold-green";
+  var redClass = "sm-widget-threshold-red";
+  var faCheckCircle = "fa fa-check-circle";
+  var faExclamationCircle = "fa fa-exclamation-circle";
+  var valueClass = "", iconClass = "", iconStyle = "";
+  if (metric.baseline === undefined) {
+    iconClass = "fa fa-minus-circle";
+    iconStyle = "color:#444444";
+  } else if (metric.direction === -1) { // 1:lesser=worse && larger=better;
+    valueClass = (val <= metric.baseline) ? greenClass : redClass;
+    iconClass = (val <= metric.baseline) ? faCheckCircle : faExclamationCircle;
+    // iconStyle = (val <= metric.baseline) ? "color:#00AA00" : "color:#D4333F";
+    iconStyle = (val <= metric.baseline) ? "color:green" : "color:#D4333F";
+  } else if (metric.direction === 1) { // -1: lesser=better && larger=worse
+    valueClass = (val >= metric.baseline) ? greenClass : redClass;
+    iconClass = (val >= metric.baseline) ? faCheckCircle : faExclamationCircle;
+    iconStyle = (val >= metric.baseline) ? "color:#green" : "color:#D4333F";
+  }
+
+  return [
+    '<div class="sm-cloneviewer-metric-container">',
+      '<i class="sm-cloneviewer-metric-icon ' + iconClass + '" style="' + iconStyle + '"></i>',
+      '<div class="sm-cloneviewer-metric-title-container" title=\'' + metric.helpText + '\'">',
+        metric.longName + ' (' + metric.title + ', ' + ((metric.baseline !== undefined)? metric.baseline : "-") + '):',
+      '</div>',
+      '<div class="sm-cloneviewer-metric-value-container ' + valueClass + '">',
+        '<b>' + (Math.round(val * 100) / 100) + '</b>',
+      '</div>',
+    '</div>'
+  ].join("");
+};
+
+SM.cloneViewer.generatePositionAnchorPopup = function(instance) {
+  var anchor = instance.name;
+  if (instance.positions[0]) {
+    var url = 'http://' + window.location.host + '/component?id=' + instance.displayedPath
+              + '&line=' + instance.positions[0].line;
+    var href = 'javascript:(function() {window.open(\'' + url + '\', \'' + instance.displayedPath
+               + '\', \'resizable,scrollbars,status\');})()';
+    anchor = '<a href="' + href + '">' + instance.displayedPath.split(":")[1] + '</a>';
+  }
+  // format: <a href="javascript:window.open('some.html', 'yourWindowName', 'width=200,height=150');">Test</a>
+  return anchor;
+};
 /**
  * Entry point for the cloneViewer. this function is guaranteed to be executed
  * after loading of all dependency scripts and styles. It will be executed every

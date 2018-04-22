@@ -6,16 +6,14 @@ SM.CloneClassSelector = function(HTMLelem, options){
 
   this.init = function(HTMLelem,options){
 
-    this.cloneClassList = options.cloneClassList ? options.cloneClassList : [];
-    this.selected = options.selected ? options.selected : undefined;
+    this.cloneClassList = (typeof options.cloneClassList !== "undefined") ? options.cloneClassList : [];
+    this.selected = (typeof options.selected !== "undefined") ? options.selected : undefined;
     this.callBacks = {
       onSelect: []
     };
 
     this.elem = HTMLelem;
     this.bindElement(HTMLelem);
-
-    this.select(this.selected);
     this.renderAll();
 
   };
@@ -29,13 +27,17 @@ SM.CloneClassSelector = function(HTMLelem, options){
     this.elem.html("");
 
     // put together the selectors html string
-    var cloneClassSelectorSkeleton = [];
-    cloneClassSelectorSkeleton.push('<select id="cloneClassSelector">')
+    var html = [];
+    html.push('<div>');
+    html.push('<select id="cloneClassSelector">')
     this.cloneClassList.forEach(function(cloneClass, i){
-        cloneClassSelectorSkeleton.push("<option value="+i+"> "+cloneClass.name+"</option>");
+        html.push("<option value="+i+"> "+cloneClass.name+"</option>");
     });
-    cloneClassSelectorSkeleton.push('</select>');
-    this.elem.append(cloneClassSelectorSkeleton.join(""));
+    html.push('</select>');
+    html.push('</div>');
+    html.push('<div id="cloneClassMetricsContainer"></div>');
+
+    this.elem.append(html.join(""));
 
     this.renderMetrics();
 
@@ -43,11 +45,37 @@ SM.CloneClassSelector = function(HTMLelem, options){
     $("#cloneClassSelector").selectmenu();
     $("#cloneClassSelector").val(this.selected).selectmenu("refresh");
 
+    $("#cloneClassSelectorContainer .sm-cloneviewer-metric-title-container").tooltip({
+      content: function() {
+        return $(this).prop('title');
+      }
+    });
+
+  };
+
+  this.renderMetrics = function(){
+    var div = $('#cloneClassMetricsContainer');
+    div.html("");
+    var html = [];
+    var metrics = this.cloneClassList[this.selected].cloneClassMetrics;
+    for(var metric in metrics){
+      SM.state[SM.options.component.key].clone.classMetrics.forEach(function(tempMetric){
+        if(metric === tempMetric.title){
+          metric = tempMetric;
+        }
+      });
+      metric = metric || { direction: 0 };
+      html.push(SM.cloneViewer.getFormatedMetric(metrics[metric.title], metric));
+    };
+    html.push();
+
+    div.append(html.join(""));
   };
 
   this.addCallBack = function(event, callback){
     if(typeof this.callBacks[event] === "undefined") throw "this event is undefined for CloneClassSelector";
     this.callBacks[event].push(callback);
+    callback(this.selected);
   };
 
   /**
@@ -82,24 +110,6 @@ SM.CloneClassSelector = function(HTMLelem, options){
   this.registerEvents = function() {
     this.elem.on("selectmenuselect", "#cloneClassSelector", this.onCloneClassChange);
   };
-
-  this.renderMetrics = function(){
-    var div = $('#cloneClassMetricsContainer');
-    div.html("");
-    var html = [];
-    // console.log(this)
-    // console.log(this.cloneClassList)
-    // console.log(this.selected)
-    // console.log(this.cloneClassList[this.selected])
-    // var metrics = this.cloneClassList[this.selected].cloneClassMetrics;
-    // for(var metric in metrics){
-    //   html.push(this.getFormatedMetric(metrics[metric],metric));
-    // };
-    html.push();
-
-    div.append(html.join(""));
-  };
-
 
   this.getFormatedMetric = function(val, metric) {
     if (val === undefined) {
@@ -144,3 +154,4 @@ SM.CloneClassSelector = function(HTMLelem, options){
   this.init(HTMLelem,options);
 };
 
+SM.cloneViewer.main()

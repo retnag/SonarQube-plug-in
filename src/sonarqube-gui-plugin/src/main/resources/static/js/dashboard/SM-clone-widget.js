@@ -149,7 +149,7 @@ SM.CloneWidget = function(elem, options) {
       // there sould always be at least 2 instances per class
       var cloneInstance = cloneClass.cloneInstances[0];
       row += '<td class="sm-widget-line-icons"><i class="sm-icon-square sm-icon-clone-instance"></i></td>';
-      row += '<td class="sm-widget-row-instance">' + this.generateCloneViewerLink(cloneInstance, i, 0) + '</td>';
+      row += '<td class="sm-widget-row-instance">' + this.generateCloneViewerLink(cloneInstance, cloneClass.index, 0) + '</td>';
       this.instanceMetrics.forEach(function(metric) {
         row += '<td>';
         row += SM.formatMetric(cloneClass.cloneInstances[0].cloneInstanceMetrics[metric.title], metric);
@@ -164,7 +164,7 @@ SM.CloneWidget = function(elem, options) {
         cloneInstance = cloneClass.cloneInstances[j];
         row = '<tr>';
         row += '<td class="sm-widget-line-icons"><i class="sm-icon-square sm-icon-clone-instance"></i></td>';
-        row += '<td class="sm-widget-row-instance">' + this.generateCloneViewerLink(cloneInstance, i, j) + '</td>';
+        row += '<td class="sm-widget-row-instance">' + this.generateCloneViewerLink(cloneInstance, cloneClass.index, j) + '</td>';
         this.instanceMetrics.forEach(function(metric) {
           // there sould always be at least 2 instances per class
           row += '<td>' + SM.formatMetric(cloneInstance.cloneInstanceMetrics[metric.title], metric) + '</td>';
@@ -274,9 +274,7 @@ SM.CloneWidget = function(elem, options) {
       var href = 'javascript:(function() {'
       + 'var stateData = SM.state[SM.options.component.key];'
       + 'stateData.cloneViewer.selectedCloneClass = ' + i + ';'
-      + 'stateData.cloneViewer.selectedInstances =' + j + ';'
-      + 'stateData.cloneViewer.selectedCloneClassName = stateData.clone.data[' + i + '].name;'
-      + 'stateData.cloneViewer.selectedCloneInstanceName = stateData.clone.data[' + i + '].cloneInstances[' + j + '].name;'
+      + 'stateData.cloneViewer.selectedInstances = [' + j + ', ' + ((j===0) ? 1 : 0) + '];'
       + '  SM.options.router.push(\'' + url + '\', \''
       + '\', \'resizable,scrollbars,status\');})()';
       anchor = '<a href="' + href + '">' + pack.name + '</a>';
@@ -491,7 +489,8 @@ SM.CloneWidget = function(elem, options) {
     };
 
     // set code path properly (important when there are submodules)
-    self.data.forEach(function(obj) {
+    self.data.forEach(function(obj, index) {
+      obj.index = index;
       obj.cloneInstances.forEach(function(inst) {
         if (inst.positions.length > 0) {
           inst.displayedPath = self.projectId + ':' + inst.positions[0].path;
@@ -516,6 +515,7 @@ SM.CloneWidget = function(elem, options) {
   this.merge = function(other) {
     // merge the data
     other.data.forEach(function(obj) {
+      obj.index = self.data.length;
       self.data.push(obj);
     });
 

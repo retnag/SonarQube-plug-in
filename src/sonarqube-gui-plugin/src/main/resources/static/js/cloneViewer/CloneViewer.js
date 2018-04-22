@@ -17,18 +17,18 @@ SM.CloneViewer = function(){
   var self = this;
 
   this.init = function(){
-
     this.selectedCloneClass = SM.state[SM.options.component.key].cloneViewer.selectedCloneClass;
     this.selectedInstances = SM.state[SM.options.component.key].cloneViewer.selectedInstances;
+
+    this.codeBrowser = new SM.SideBySideDiffer($("#cloneViewerConatiner"), {});
 
     this.cloneClassSelector = new SM.CloneClassSelector(
       $("#cloneClassSelectorContainer"),
       {
         cloneClassList: SM.state[SM.options.component.key].clone.data,
-        selected: 0
+        selected: this.selectedCloneClass
       }
     );
-    this.cloneClassSelector.addCallBack("onSelect", this.handleCloneClassChange);
 
     this.cloneInstanceSelectors = [];
     for(var i = 0; i < this.maxInstances; i++){
@@ -38,13 +38,14 @@ SM.CloneViewer = function(){
         $("#cloneInstanceSelector" + i),
         {
           cloneInstanceList: instanceList,
+          selected: (this.selectedInstances[i])? this.selectedInstances[i] : 0,
           id: i
         }
       );
       this.cloneInstanceSelectors[i].addCallBack("onSelect", this.handleCloneInstanceChange);
     }
+    this.cloneClassSelector.addCallBack("onSelect", this.handleCloneClassChange);
 
-    this.codeBrowser = new SM.SideBySideDiffer($("#cloneViewerConatiner"), {});
   };
 
   /**
@@ -61,12 +62,11 @@ SM.CloneViewer = function(){
    * @return {void}
    */
   this.handleCloneClassChange = function(selection){
-console.log("handleCloneClassChange");
     this.selectedCloneClass = selection;
-    this.cloneInstanceSelectors.forEach(function(instanceSelector){
+    this.cloneInstanceSelectors.forEach(function(instanceSelector, i){
       var instanceList = self.cloneClassSelector.cloneClassList[self.selectedCloneClass].cloneInstances;
       instanceSelector.cloneInstanceList = instanceList;
-      instanceSelector.select(0);
+      instanceSelector.select(i);
       instanceSelector.renderAll();
     });
   };
@@ -76,7 +76,6 @@ console.log("handleCloneClassChange");
    * @return {void}
    */
   this.handleCloneInstanceChange = function(id){
-console.log("handleCloneInstanceChange");
     var instanceSelector = this.cloneInstanceSelectors[id];
     var selectedInstance = instanceSelector.cloneInstanceList[instanceSelector.selected];
     var func = function(text){

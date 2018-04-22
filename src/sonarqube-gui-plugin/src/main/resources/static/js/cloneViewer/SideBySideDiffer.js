@@ -35,13 +35,13 @@ SM.SideBySideDiffer = function(HTMLelem, options){
    * @return {void}
    */
   this.renderAll = function(){
-    var diff = JsDiff.createPatch('fileName', this.text1, this.text2, 'oldHeader', 'newHeader');
+    var diff = JsDiff.createPatch('fileName', this.text1, this.text2, 'oldHeader', 'newHeader',{context:100000});
     var html = Diff2Html.getPrettySideBySideHtmlFromDiff(diff, {
       wordByWord: true,
       outputFormat: 'side-by-side'
     });
     this.elem.html(html);
-    $(".d2h-file-header").html("");
+    $(".d2h-file-header").html("Diff:");
   };
 
   this.setText1 = function (str){
