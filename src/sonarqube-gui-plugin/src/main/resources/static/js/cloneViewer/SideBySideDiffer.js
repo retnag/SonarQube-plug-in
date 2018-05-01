@@ -19,15 +19,6 @@ SM.SideBySideDiffer = function(HTMLelem, options){
     this.renderAll();
 
   };
-/*
-  this.diff = JsDiff.createPatch('fileName', this.setText1, this.setText2, 'oldHeader', 'newHeader');
-
-  this.html = Diff2Html.getPrettySideBySideHtmlFromDiff(this.diff, {
-      wordByWord: true,
-      // outputFormat: 'line-by-line',
-      outputFormat: 'side-by-side'
-    });
-*/
 
   /**
    * Generates HTML of dependant of the current state of the object.
@@ -36,11 +27,11 @@ SM.SideBySideDiffer = function(HTMLelem, options){
    */
   this.renderAll = function(){
     var diff = JsDiff.createPatch('fileName', this.text1, this.text2, 'oldHeader', 'newHeader',{context:100000});
-    var html = Diff2Html.getPrettySideBySideHtmlFromDiff(diff, {
-      wordByWord: true,
-      outputFormat: 'side-by-side'
-    });
-    this.elem.html(html);
+
+    var diff2htmlUi = new Diff2HtmlUI({diff: diff});
+    diff2htmlUi.draw(this.elem, {inputFormat: 'diff', showFiles: false, matching: 'lines',outputFormat: 'side-by-side'});
+    diff2htmlUi.highlightCode(this.elem);
+
     $(".d2h-file-header").html("Diff:");
   };
 

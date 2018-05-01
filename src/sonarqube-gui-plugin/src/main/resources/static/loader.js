@@ -39,10 +39,16 @@ SM.loader.src = {
     scripts: [ // these scripts will be loaded on this page, replacing f.e. the older jquery or underscore that sonarqube uses.
       "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js",
       "https://code.jquery.com/ui/1.12.1/jquery-ui.min.js",
+      "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js",
+      "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/java.min.js",
+      "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/cs.min.js",
+      "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/cpp.min.js",
+      "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/python.min.js",
       "https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"
     ],
     styles: [ // these stylesheets will be loaded
       "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css",
+      "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css"
     ]
   },
   local: { // these get baseUrl prepended automatically
