@@ -43,7 +43,7 @@ SM.cloneViewer.generatePositionAnchorPopup = function(instance) {
     var url = 'http://' + window.location.host + '/component?id=' + instance.displayedPath
               + '&line=' + instance.positions[0].line;
     var href = 'javascript:(function() {window.open(\'' + url + '\', \'' + instance.displayedPath
-               + '\', \'resizable,scrollbars,status\');})()';
+               + instance.name+'\', \'resizable,scrollbars,status\');})()';
     anchor = '<a href="' + href + '">' + instance.displayedPath.split(":")[1] + '</a>';
   }
   // format: <a href="javascript:window.open('some.html', 'yourWindowName', 'width=200,height=150');">Test</a>
