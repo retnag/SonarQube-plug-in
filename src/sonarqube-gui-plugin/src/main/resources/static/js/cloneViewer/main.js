@@ -69,11 +69,11 @@ SM.cloneViewer.main = function() {
   var stateData = SM.state[SM.options.component.key].cloneViewer;
 
   // dashboard data was never fetched before, so neither was the cloneViewer or the dashboard visited before
-  if(!SM.state[SM.options.component.key].initialized) {
+  if (!SM.state[SM.options.component.key].initialized) {
     SM.dashboard.fetch();
     SM.waitForNDo(
       function() {
-        if(SM.state[SM.options.component.key].clone) {
+        if (SM.state[SM.options.component.key].clone) {
           return true;
         } else {
           return false ;

@@ -1,21 +1,22 @@
 SM.CloneClassSelector = function(HTMLelem, options){
+  SM.Subscribable.call(this); // inherit from SM.Subscribable
   this.elem = null; // :DOMElement
   this.cloneClassList; // :CloneClass[]
   this.selected; // :int
-  this.callBacks; // :map<string,function>
+
+  var self = this;
 
   this.init = function(HTMLelem,options){
-
     this.cloneClassList = (typeof options.cloneClassList !== "undefined") ? options.cloneClassList : [];
     this.selected = (typeof options.selected !== "undefined") ? options.selected : undefined;
-    this.callBacks = {
-      onSelect: []
-    };
 
     this.elem = HTMLelem;
     this.bindElement(HTMLelem);
     this.renderAll();
-
+    SM.MetricLoader.subscribe("finishedAllRequests", function() {
+      self.renderMetrics();
+    });
+    this.renderAll();
   };
 
   /**
@@ -45,37 +46,22 @@ SM.CloneClassSelector = function(HTMLelem, options){
     $("#cloneClassSelector").selectmenu();
     $("#cloneClassSelector").val(this.selected).selectmenu("refresh");
 
+  };
+
+  this.renderMetrics = function(){
+    var div = $('#cloneClassMetricsContainer');
+    var html = [];
+    var data = this.cloneClassList[this.selected].cloneClassMetrics;
+    var metrics = SM.state[SM.options.component.key].clone.classMetrics;
+    metrics.forEach(function(metric) {
+      html.push(SM.cloneViewer.getFormatedMetric(data[metric.title], metric));
+    });
+    div.html(html.join(""));
     $("#cloneClassSelectorContainer .sm-cloneviewer-metric-title-container").tooltip({
       content: function() {
         return $(this).prop('title');
       }
     });
-
-  };
-
-  this.renderMetrics = function(){
-    var div = $('#cloneClassMetricsContainer');
-    div.html("");
-    var html = [];
-    var metrics = this.cloneClassList[this.selected].cloneClassMetrics;
-    for(var metric in metrics){
-      SM.state[SM.options.component.key].clone.classMetrics.forEach(function(tempMetric){
-        if(metric === tempMetric.title){
-          metric = tempMetric;
-        }
-      });
-      metric = metric || { direction: 0 };
-      html.push(SM.cloneViewer.getFormatedMetric(metrics[metric.title], metric));
-    };
-    html.push();
-
-    div.append(html.join(""));
-  };
-
-  this.addCallBack = function(event, callback){
-    if(typeof this.callBacks[event] === "undefined") throw "this event is undefined for CloneClassSelector";
-    this.callBacks[event].push(callback);
-    callback(this.selected);
   };
 
   /**
@@ -84,12 +70,9 @@ SM.CloneClassSelector = function(HTMLelem, options){
    * @return {void}
    */
   this.select = function (choice){
-
     this.selected = choice;
-    this.callBacks.onSelect.forEach(function(callback){
-      callback(choice);
-    });
-
+    this.renderMetrics();
+    this.emit("onSelect", choice);
   };
 
   this.onCloneClassChange = function(event, ui){
@@ -97,11 +80,11 @@ SM.CloneClassSelector = function(HTMLelem, options){
   };
 
   this.bindElement = function(elem) {
-    if (!jQuery.contains(document, this.elem[0])) {
+    if (this.elem !== null && jQuery.contains(document, this.elem[0])) {
       this.elem.html("");
     }
     this.elem = elem;
-    if (jQuery.contains(document, this.elem[0])) {
+    if (this.elem !== null && jQuery.contains(document, this.elem[0])) {
       this.renderAll();
       this.registerEvents();
     }
@@ -116,7 +99,7 @@ SM.CloneClassSelector = function(HTMLelem, options){
       return '-';
     }
     SM.state[SM.options.component.key].clone.classMetrics.forEach(function(tempMetric){
-      if(metric === tempMetric.title){
+      if (metric === tempMetric.title){
         metric = tempMetric;
       }
     });
@@ -149,9 +132,8 @@ SM.CloneClassSelector = function(HTMLelem, options){
     ].join("");
   };
 
-
   SM.bindFunctions(this);
   this.init(HTMLelem,options);
 };
-
-SM.cloneViewer.main()
+SM.CloneClassSelector.prototype = new SM.Subscribable();
+SM.CloneClassSelector.prototype.constructor = SM.Subscribable;

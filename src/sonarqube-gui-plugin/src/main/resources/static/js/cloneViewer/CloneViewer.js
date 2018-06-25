@@ -6,19 +6,21 @@
 SM.CloneViewer = function(){
   this.elem = null; // :DOMElement
   this.maxInstances = 2; // :int
-  this.cloneClassSelector; // :ClassSelector
-  this.cloneInstanceSelectors; // :InstanceSelector[]
-  this.codeBrowser; // :CodeBrowser (manages the diffs)
+  this.cloneClassSelector = null; // :SM.ClassSelector
+  this.cloneInstanceSelectors = null; // :SM.InstanceSelector[]
+  this.codeBrowser = null; // :SM.SideBySideDiffer (manages the diffs)
 
-  this.selectedCloneClass;
-  this.selectedInstances;
-  this.codeBrowser;
+  this.selectedCloneClass = null;
+  this.selectedInstances = null;
+  this.codeBrowser = null;
 
   var self = this;
 
   this.init = function(){
     this.selectedCloneClass = SM.state[SM.options.component.key].cloneViewer.selectedCloneClass;
+    this.selectedCloneClass = (this.selectedCloneClass)? this.selectedCloneClass : 0;
     this.selectedInstances = SM.state[SM.options.component.key].cloneViewer.selectedInstances;
+    this.selectedInstances = (this.selectedInstances)? this.selectedInstances : [];
 
     this.codeBrowser = new SM.SideBySideDiffer($("#cloneViewerConatiner"), {});
 
@@ -31,10 +33,10 @@ SM.CloneViewer = function(){
     );
 
     this.cloneInstanceSelectors = [];
-    for(var i = 0; i < this.maxInstances; i++){
+    for (var i = 0; i < this.maxInstances; i++){
       $("#cloneInstanceSelectorContainer").append('<div id="cloneInstanceSelector' + i + '"></div>');
-        var instanceList = this.cloneClassSelector.cloneClassList[this.selectedCloneClass].cloneInstances;
-        this.cloneInstanceSelectors[i] = new SM.CloneInstanceSelector(
+      var instanceList = this.cloneClassSelector.cloneClassList[this.selectedCloneClass].cloneInstances;
+      this.cloneInstanceSelectors[i] = new SM.CloneInstanceSelector(
         $("#cloneInstanceSelector" + i),
         {
           cloneInstanceList: instanceList,
@@ -42,10 +44,11 @@ SM.CloneViewer = function(){
           id: i
         }
       );
-      this.cloneInstanceSelectors[i].addCallBack("onSelect", this.handleCloneInstanceChange);
+      this.cloneInstanceSelectors[i].subscribe("onSelect", this.handleCloneInstanceChange);
     }
-    this.cloneClassSelector.addCallBack("onSelect", this.handleCloneClassChange);
+    this.cloneClassSelector.subscribe("onSelect", this.handleCloneClassChange);
 
+    this.cloneClassSelector.select(this.selectedCloneClass) // triggers events
   };
 
   /**
@@ -54,7 +57,9 @@ SM.CloneViewer = function(){
    * @return {void}
    */
   this.renderAll = function(){
-    this.elem.html("");
+    this.cloneClassSelector.renderAll();
+    this.cloneInstanceSelectors.renderAll();
+    this.codeBrowser.renderAll();
   };
 
   /**
@@ -78,12 +83,12 @@ SM.CloneViewer = function(){
   this.handleCloneInstanceChange = function(id){
     var instanceSelector = this.cloneInstanceSelectors[id];
     var selectedInstance = instanceSelector.cloneInstanceList[instanceSelector.selected];
-    var func = function(text){
-      self.codeBrowser["setText"+(id+1)](text.join("\n"));
-    };
     var start = selectedInstance.positions[0].line;
     var stop = start + selectedInstance.cloneInstanceMetrics.CLLOC;
-    var text = SM.RawFileLoader.requestSliceOfRawFile(
+    var func = function(text){
+      self.codeBrowser.setText(id+1, {startLine: start ,txt:text.join("\n")});
+    };
+    SM.RawFileLoader.requestSliceOfRawFile(
       func,
       selectedInstance.displayedPath,
       start,

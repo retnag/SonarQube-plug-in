@@ -3,21 +3,16 @@
  * @param {[type]} HTMLelem [description]
  * @param {[type]} options  [description]
  */
-SM.SideBySideDiffer = function(HTMLelem, options){
+SM.SideBySideDiffer = function(HTMLelem, options) {
   this.elem = null; // :DOMElement
-  this.text1; // :string
-  this.text2; // :string
-  this.callBacks; // :map<string,function>
+  this.text = []; // :string[]
 
   this.init = function(HTMLelem,options){
     options = (options) ? options:  {};
-    this.text1 = options.text1 ? options.text1 : "";
-    this.text2 = options.text2 ? options.text2 : "";
+    this.text[1] = options.text1 ? options.text1 : {start: 0, txt: ""};
+    this.text[2] = options.text2 ? options.text2 : {start: 0, txt: ""};
 
-    this.elem = HTMLelem;
     this.bindElement(HTMLelem);
-    this.renderAll();
-
   };
 
   /**
@@ -25,32 +20,69 @@ SM.SideBySideDiffer = function(HTMLelem, options){
    * Then overwrites the HTML in the visible webpage as well.
    * @return {void}
    */
-  this.renderAll = function(){
-    var diff = JsDiff.createPatch('fileName', this.text1, this.text2, 'oldHeader', 'newHeader',{context:100000});
+  this.renderAll = function() {
+    var isMatch = (this.text[1].txt === this.text[2].txt);
+
+    if (!isMatch) {
+      var diff = JsDiff.createPatch('fileName', this.text[1].txt, this.text[2].txt, 'oldHeader', 'newHeader',{context:100000});
+    } else {
+      var diff = [
+        "Index: fileName",
+        "===================================================================",
+        "--- fileName  oldHeader",
+        "+++ fileName  newHeader",
+        "@@ -1 +1 @@",
+      ].join("\n");
+      txt = this.text[1].txt.split("\n");
+      txt = txt.map(function(s) {return " " + s});
+      txt = txt.join("\n");
+      diff = [diff, txt].join("\n");
+    }
 
     var diff2htmlUi = new Diff2HtmlUI({diff: diff});
-    diff2htmlUi.draw(this.elem, {inputFormat: 'diff', showFiles: false, matching: 'lines',outputFormat: 'side-by-side'});
+    diff2htmlUi.draw(this.elem, {
+      inputFormat: 'diff',
+      showFiles: false, matching:
+      'lines',outputFormat: 'side-by-side',
+      synchronisedScroll:true
+    });
     diff2htmlUi.highlightCode(this.elem);
 
-    $(".d2h-file-header").html("Diff:");
+    if (isMatch) {
+      $(".d2h-file-header").html("The instances are identical! (the left instance is shown)");
+      $(".d2h-files-diff").children()[1].remove(); // remove the right hand size panel
+      $($(".d2h-files-diff").children()[0]).css({width:"100%"}); // stretch the left hand panel
+    } else {
+      $(".d2h-file-header").html("Diff:");
+    }
+    $(".d2h-diff-tbody tr:first-child").remove() // remove the annotation line (eg. "@@ -1 +1 @@")
+
+    // overwrite line numbers to match line numbers of the original file
+    for (var i = 1; i <= 2; i++) {
+      var index = this.text[i].startLine;
+      $($(".d2h-diff-tbody")[i-1])
+        .find(".d2h-code-side-linenumber")
+        .each(function(node) {
+          $(this).html(index++)
+        });
+    }
   };
 
-  this.setText1 = function (str){
-    this.text1 = str;
-    this.renderAll();
-  };
-
-  this.setText2 = function (str){
-    this.text2 = str;
+  this.setText = function (id, obj) {
+    if (id >= this.text.length) {
+      throw "IndexOutOfBoundsException";
+      return;
+    }
+    this.text[id] = obj;
     this.renderAll();
   };
 
   this.bindElement = function(elem) {
-    if (!jQuery.contains(document, this.elem[0])) {
+    if (this.elem !== null && jQuery.contains(document, this.elem[0])) {
       this.elem.html("");
     }
     this.elem = elem;
-    if (jQuery.contains(document, this.elem[0])) {
+    if (this.elem !== null && jQuery.contains(document, this.elem[0])) {
       this.renderAll();
       this.registerEvents();
     }
