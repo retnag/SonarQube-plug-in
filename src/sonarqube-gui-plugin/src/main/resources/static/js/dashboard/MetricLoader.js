@@ -29,6 +29,7 @@
  */
 
 SM.MetricLoader = new (function() { // Singleton object
+  SM.Subscribable.call(this); // inherit from SM.Subscribable
   var self = this;
   var config = {
     reversedMetrics: [ "CLOC", "DLOC", "TCLOC", "TPDA", "TPUA", "CD", "TCD", "AD", "TAD"]
@@ -65,10 +66,13 @@ SM.MetricLoader = new (function() { // Singleton object
       resetCountdown = true;
     }
 
-    if (this.metrics[metric.getUniqueKey()]) {
-      // requested earlyer, fetched already -> returning that one
-      metric.baseline = this.metrics[metric.getUniqueKey()].baseline;
-      metric.helpText = this.metrics[metric.getUniqueKey()].helpText;
+    if (this.metrics[metric.getUniqueKey()]) { // requested earlyer, fetched already -> returning that one
+      // fill data into supplied metric object.
+      Object.keys(this.metrics[metric.getUniqueKey()]).forEach(function(attr) {
+        if (self.metrics[metric.getUniqueKey()].hasOwnProperty(attr)) {
+          metric[attr] = self.metrics[metric.getUniqueKey()][attr];
+        }
+      });
       if (callback) {
         callback(this.metrics[metric.getUniqueKey()]);
       }
@@ -79,8 +83,11 @@ SM.MetricLoader = new (function() { // Singleton object
       }
       // add callback that fills data into supplied metric object.
       this.callbacks[metric.getUniqueKey()].push(function(met) {
-        metric.baseline = met.baseline;
-        metric.helpText = met.helpText;
+        Object.keys(met).forEach(function(attr) {
+          if (met.hasOwnProperty(attr)) {
+            metric[attr] = met[attr];
+          }
+        });
       });
       resetCountdown = true;
 
@@ -94,7 +101,7 @@ SM.MetricLoader = new (function() { // Singleton object
     }
 
     if (resetCountdown) {
-      this.countdown = setTimeout(this.getEm, 1000);
+      this.countdown = setTimeout(this.getEm, 100);
     }
   };
 
@@ -104,9 +111,12 @@ SM.MetricLoader = new (function() { // Singleton object
     if (Object.keys(this.metricsToGet).length === 0) return; // nothing to do
 
     if (!this.ready) {
-      setTimeout(this.getEm, 1000);
+      setTimeout(this.getEm, 100);
       return false; // try again later
     }
+
+    var queriedMetrics = this.metricsToGet;
+    this.metricsToGet = {}; // if another request arrives, dont mix two batches
 
     var helper = {};
     var parsedHTML = {};
@@ -114,23 +124,10 @@ SM.MetricLoader = new (function() { // Singleton object
       parsedHTML[lang.id] = $(lang.helpPage);
     });
 
-    // get the metric baselines
-    var uniqueKeys = Object.keys(this.metricsToGet);
-    var metric = this.metricsToGet[uniqueKeys[0]];
-    var smid = metric.langID.toLowerCase();
-    // fix id inconsistencies
-    if (smid === "csharp") {
-      smid = "cs";
-    } else if (smid === "python") {
-      smid = "py";
-    }
-    var key = "sm." + smid + "." + metric.scope.toLowerCase()
-              + ".baseline." + metric.title;
-    var queryString = key;
-    helper[key] = metric.getUniqueKey();
-
-    for (var i = 1; i < uniqueKeys.length; i++) {
-      metric = this.metricsToGet[uniqueKeys[i]];
+    var uniqueKeys = Object.keys(queriedMetrics);
+    var query = [];
+    for (var i = 0; i < uniqueKeys.length; i++) {
+      metric = queriedMetrics[uniqueKeys[i]];
       smid = metric.langID.toLowerCase();
       // fix id inconsistencies
       if (smid === "csharp") {
@@ -140,25 +137,26 @@ SM.MetricLoader = new (function() { // Singleton object
       }
       key = "sm." + smid + "." + metric.scope.toLowerCase()
             + ".baseline." + metric.title;
-      queryString += ", " + key;
+      query.push(key);
       helper[key] = metric.getUniqueKey();
     }
+    var queryString = query.join(",");
+
     a = window.SonarRequest.getJSON(location.origin + '/api/settings/values', {
       component: SM.options.component.key,
       keys: queryString
     }).then(function(response) {
 
       uniqueKeys.forEach(function(key) {
-        var instance = self.metricsToGet[key]
-
+        var instance = queriedMetrics[key]
         // correct the direction for some metrics
         if (config.reversedMetrics.indexOf(instance.title) != -1) {
           instance.direction = 1;
         }
-      })
+      });
 
       response.settings.forEach(function(res) {
-        var met = self.metricsToGet[helper[res.key]];
+        var met = queriedMetrics[helper[res.key]];
         met.baseline = (res.value)  // if its undefined -> 0
           ? res.value * 1
           : undefined;
@@ -171,8 +169,8 @@ SM.MetricLoader = new (function() { // Singleton object
       });
 
       // now, after the baseline loaded, parse the metric description
-      Object.keys(self.metricsToGet).forEach(function(key) {
-        met = self.metricsToGet[key];
+      Object.keys(queriedMetrics).forEach(function(key) {
+        met = queriedMetrics[key];
         if (typeof self.metrics[met.getUniqueKey()] === "undefined") {
           self.metrics[met.getUniqueKey()] = met;
         }
@@ -196,7 +194,7 @@ SM.MetricLoader = new (function() { // Singleton object
         });
       });
 
-      self.metricsToGet = {};
+      self.emit("finishedAllRequests");
 
     });
   };

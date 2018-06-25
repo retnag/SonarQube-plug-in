@@ -461,23 +461,6 @@ SM.LogicWidget = function(HTMLelem, options) {
   this.bindElement = this.bindElement.bind(this);
 
   this.init = function() {
-    var redraw = function() {
-      if (self.elem !== null && jQuery.contains(document, self.elem[0])) {
-        self.renderTable();
-      }
-      cooldown = false;
-    };
-
-    var cooldown = false;
-
-    var batchRedraw = function() {
-      // collapse frequent requests into a single one
-      if (cooldown) {
-        clearTimeout(cooldown);
-      }
-      cooldown = setTimeout(redraw, 1000);
-    };
-
     // set code path properly
     this.data.forEach(function(obj) {
       if (obj.positions.length > 0) {
@@ -485,15 +468,22 @@ SM.LogicWidget = function(HTMLelem, options) {
       }
     });
 
+    // call renderTable when all metric data has been loaded to refresh the view
+    SM.MetricLoader.subscribe("finishedAllRequests", function() {
+      if (self.elem !== null && jQuery.contains(document, self.elem[0])) {
+        self.renderTable();
+      }
+    });
+    // start loading metric thresholds and helptext
+    this.commonMetrics.forEach(function(metric, j) {
+      SM.MetricLoader.requestMetric(metric);
+    });
+
     this.orderBy(consts.TEXT_NAME, "asc");
     if (this.elem !== null && jQuery.contains(document, this.elem[0])) {
       this.renderAll();
       this.registerEvents();
     }
-    // loading metric thresholds one by one
-    this.commonMetrics.forEach(function(metric, j) {
-      SM.MetricLoader.requestMetric(metric, batchRedraw);
-    });
   };
   this.init = this.init.bind(this);
 

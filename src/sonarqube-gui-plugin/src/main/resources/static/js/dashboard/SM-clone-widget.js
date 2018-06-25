@@ -275,8 +275,8 @@ SM.CloneWidget = function(elem, options) {
       + 'var stateData = SM.state[SM.options.component.key];'
       + 'stateData.cloneViewer.selectedCloneClass = ' + i + ';'
       + 'stateData.cloneViewer.selectedInstances = [' + j + ', ' + ((j===0) ? 1 : 0) + '];'
-      + '  SM.options.router.push(\'' + url + '\', \''
-      + '\', \'resizable,scrollbars,status\');})()';
+      + 'SM.options.router.push(\'' + url + '\');'
+      + '})()';
       anchor = '<a href="' + href + '">' + pack.name + '</a>';
     }
 
@@ -468,25 +468,9 @@ SM.CloneWidget = function(elem, options) {
   this.bindElement = this.bindElement.bind(this);
 
   this.init = function() {
-    if(typeof SM.state[SM.options.component.key].cloneViewer === "undefined"){
+    if(typeof SM.state[SM.options.component.key].cloneViewer === "undefined") {
       SM.state[SM.options.component.key].cloneViewer = {};
     }
-
-    var redraw = function() {
-      if (self.elem !== null && jQuery.contains(document, self.elem[0])) {
-        self.renderTable();
-      }
-    };
-
-    var cooldown = false;
-
-    var batchRedraw = function() {
-      // collapse frequent requests into a single one
-      if (!cooldown) {
-        clearTimeout(cooldown);
-      }
-      cooldown = setTimeout(redraw, 1000);
-    };
 
     // set code path properly (important when there are submodules)
     self.data.forEach(function(obj, index) {
@@ -503,12 +487,17 @@ SM.CloneWidget = function(elem, options) {
       this.renderAll();
       this.registerEvents();
     }
-    // loading metric thresholds one by one
-    this.instanceMetrics.forEach(function(metric, j) {
-      SM.MetricLoader.requestMetric(metric, batchRedraw);
+    SM.MetricLoader.subscribe("finishedAllRequests", function() {
+      if (self.elem !== null && jQuery.contains(document, self.elem[0])) {
+        self.renderTable();
+      }
     });
-    this.classMetrics.forEach(function(metric, j) {
-      SM.MetricLoader.requestMetric(metric, batchRedraw);
+    // loading metric thresholds one by one
+    this.instanceMetrics.forEach(function(metric) {
+      SM.MetricLoader.requestMetric(metric);
+    });
+    this.classMetrics.forEach(function(metric) {
+      SM.MetricLoader.requestMetric(metric);
     });
   };
 
