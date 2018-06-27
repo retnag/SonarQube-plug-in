@@ -87,16 +87,22 @@ SM.loader.src = {
 /**
  *  Loads a script into the DOM with src="url".
  *  if 'basePath' is defined, it gets prepended to 'url'
+ *  Only loads the script if it hasn't been appended to the document before
+ *
+ *  Copied to help.js
  */
 SM.loader.loadScript = function(url, basePath) {
   basePath = basePath ? basePath : "";
+  if (document.getElementById(basePath + url) === null){ //checks if the script is already loaded
+    var script = document.createElement('script');
 
-  var script = document.createElement('script');
-  script.type = 'text/javascript';
-  script.async = false;
-  script.src = basePath + url;
+    script.type = 'text/javascript';
+    script.async = false;
+    script.src = basePath + url;
+    script.setAttribute("id", basePath + url)
 
-  document.head.append(script);
+    document.head.append(script);
+  }
 };
 /**
  *  Loads a stylesheet into the DOM with src="url".

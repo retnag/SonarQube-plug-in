@@ -79,6 +79,31 @@ window.registerExtension('SourceMeterGUI/help', function(options) {
     }, time);
   };
 
+
+  /**
+   *  Loads a script into the DOM with src="url".
+   *  if 'basePath' is defined, it gets prepended to 'url'
+   *  Only loads the script if it hasn't been appended to the document before
+   *
+   *  Copied from loader.js
+   */
+  loadScript = function(url, isAsync, basePath) {
+    basePath = basePath ? basePath : "";
+    isAsync = isAsync ? isAsync : false; //false by default
+    if (document.getElementById(basePath + url) === null){ //checks if the script is already loaded
+      var script = document.createElement('script');
+
+      script.type = 'text/javascript';
+      script.async = isAsync;
+      script.src = basePath + url;
+      script.setAttribute("id", basePath + url)
+      
+      document.head.append(script);
+    }
+  };
+
+
+
   /**
    * load - Manages the loading of the SM-gui-plugin itself. Ensures loading
    * happens only once. Assumes SM exists.
@@ -106,12 +131,7 @@ window.registerExtension('SourceMeterGUI/help', function(options) {
     }
 
     // load script loader.js, from then loader loads everything.
-    var scriptLoad = document.createElement('script');
-    scriptLoad.type = 'text/javascript';
-    scriptLoad.async = true;
-    scriptLoad.src = "/static/SourceMeterGUI/loader.js";
-
-    document.head.appendChild(scriptLoad);
+    loadScript("/static/SourceMeterGUI/loader.js", true);
 
     waitForNDo(
       function() {
@@ -124,11 +144,9 @@ window.registerExtension('SourceMeterGUI/help', function(options) {
 
 
   // load global vars into global scope
-  var scriptGlob = document.createElement('script');
-  scriptGlob.type = 'text/javascript';
-  scriptGlob.src = "/static/SourceMeterGUI/globals.js";
+  loadScript("/static/SourceMeterGUI/globals.js");
 
-  document.head.appendChild(scriptGlob);
+
   waitForNDo(
     function() {
       return (typeof SM !== 'undefined') && SM.globalsInitialized;
