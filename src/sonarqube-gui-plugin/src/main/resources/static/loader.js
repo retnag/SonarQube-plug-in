@@ -53,11 +53,11 @@ SM.loader.src = {
       'lib/diff2html/diff2html-ui.min.js',
       'lib/jsdiff/diff.min.js',
       'js/tools/Subscribable.js',
+      'js/dashboard/Metric.js',
+      'js/dashboard/MetricLoader.js',
       'js/dashboard/pageBuilder.js',
       'js/dashboard/SM-clone-widget.js',
       'js/dashboard/SM-logic-widget.js',
-      'js/dashboard/Metric.js',
-      'js/dashboard/MetricLoader.js',
       'js/dashboard/main.js',
       'js/help/pageBuilder.js',
       'js/help/main.js',
@@ -106,17 +106,21 @@ SM.loader.loadScript = function(url, basePath) {
 };
 
 /**
- *  Loads a stylesheet into the DOM with src="url".
- *  if 'basePath' is defined, it gets prepended to 'url'
+ *  Loads a stylesheet into the DOM with href="url".
+ *  if 'base' is defined, it gets prepended to 'url'
+ *  Only loads the stylesheet if it hasn't been appended to the document before
  */
 SM.loader.loadStyle = function(url, base) {
   base = base ? base : "";
+  if (document.getElementById(base + url) === null) { // checks if the stylesheet is already loaded
+    var style = document.createElement('link');
 
-  var style = document.createElement('link');
-  style.rel = "stylesheet";
-  style.href = base + url;
+    style.rel = "stylesheet";
+    style.href = base + url;
+    style.setAttribute("id", base + url);
 
-  document.head.append(style);
+    document.head.append(style);
+  }
 };
 
 /**

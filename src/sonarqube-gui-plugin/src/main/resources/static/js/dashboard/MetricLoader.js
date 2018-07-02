@@ -55,6 +55,12 @@ SM.MetricLoader = new (function() { // Singleton object
    *                  has loaded.
    */
   this.requestMetric = function(metric, callback) {
+    // sanitize inputs
+    if(!metric instanceof SM.Metric) {
+      console.log("bad Arguments in MetricLoader.requestMetric");
+    }
+    callback = (callback && callback instanceof Function)? callback : undefined;
+
     // collapse frequent requests into a single one.
     // This also substitutes a common lock for this function and getEm.
     // thus getEm wil veryvery likely not fire during the execution of
@@ -213,4 +219,5 @@ SM.MetricLoader = new (function() { // Singleton object
       },
       100
     );
+  SM.bindFunctions(this);
 })();

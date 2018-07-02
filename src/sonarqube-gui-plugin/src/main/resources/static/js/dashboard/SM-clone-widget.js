@@ -277,7 +277,7 @@ SM.CloneWidget = function(elem, options) {
    * @param  {index}         j     index  of the current cloneInstace inside the parent cloneClass
    * @return {String}              an HTML <li> element
    */
-  this.generateCloneViewerLink = function(pack, i, j){
+  this.generateCloneViewerLink = function(pack, i, j) {
     var anchor = pack.name;
     if (pack.positions[0]) {
       var url = 'http://' + window.location.host + '/project/extension/SourceMeterGUI/cloneViewer?id='
