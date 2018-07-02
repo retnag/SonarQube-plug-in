@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-2017, FrontEndART Software Ltd.
+ * Copyright (c) 2014-2018, FrontEndART Software Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -475,9 +475,7 @@ SM.LogicWidget = function(HTMLelem, options) {
       }
     });
     // start loading metric thresholds and helptext
-    this.commonMetrics.forEach(function(metric, j) {
-      SM.MetricLoader.requestMetric(metric);
-    });
+    this.commonMetrics.forEach(SM.MetricLoader.requestMetric);
 
     this.orderBy(consts.TEXT_NAME, "asc");
     if (this.elem !== null && jQuery.contains(document, this.elem[0])) {

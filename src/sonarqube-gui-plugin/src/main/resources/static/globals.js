@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-2017, FrontEndART Software Ltd.
+ * Copyright (c) 2014-2018, FrontEndART Software Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -83,7 +83,6 @@ if (typeof SM === 'undefined') { // ensure this only runs once
    * where a function is called, this is always going to be the object the
    * function belongs to.
    * @param  {object} self the object we wish to do the binding on
-   * @return {void}
    */
   SM.bindFunctions = function(self){
     Object.keys(self).forEach((prop)=>{

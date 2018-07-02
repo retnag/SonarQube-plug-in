@@ -1,4 +1,34 @@
-SM.CloneClassSelector = function(HTMLelem, options){
+/**
+ * Copyright (c) 2014-2018, FrontEndART Software Ltd.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *    This product includes software developed by FrontEndART Software Ltd.
+ * 4. Neither the name of FrontEndART Software Ltd. nor the
+ *    names of its contributors may be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY FrontEndART Software Ltd. ''AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL FrontEndART Software Ltd. BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */* @return {void}
+
+SM.CloneClassSelector = function(HTMLelem, options) {
   SM.Subscribable.call(this); // inherit from SM.Subscribable
   this.elem = null; // :DOMElement
   this.cloneClassList; // :CloneClass[]
@@ -6,7 +36,7 @@ SM.CloneClassSelector = function(HTMLelem, options){
 
   var self = this;
 
-  this.init = function(HTMLelem,options){
+  this.init = function(HTMLelem,options) {
     this.cloneClassList = (typeof options.cloneClassList !== "undefined") ? options.cloneClassList : [];
     this.selected = (typeof options.selected !== "undefined") ? options.selected : undefined;
 
@@ -24,14 +54,14 @@ SM.CloneClassSelector = function(HTMLelem, options){
    * Then overwrites the HTML in the visible webpage as well.
    * @return {void}
    */
-  this.renderAll = function(){
+  this.renderAll = function() {
     this.elem.html("");
 
     // put together the selectors html string
     var html = [];
     html.push('<div>');
     html.push('<select id="cloneClassSelector">')
-    this.cloneClassList.forEach(function(cloneClass, i){
+    this.cloneClassList.forEach(function(cloneClass, i) {
         html.push("<option value="+i+"> "+cloneClass.name+"</option>");
     });
     html.push('</select>');
@@ -48,7 +78,7 @@ SM.CloneClassSelector = function(HTMLelem, options){
 
   };
 
-  this.renderMetrics = function(){
+  this.renderMetrics = function() {
     var div = $('#cloneClassMetricsContainer');
     var html = [];
     var data = this.cloneClassList[this.selected].cloneClassMetrics;
@@ -69,13 +99,13 @@ SM.CloneClassSelector = function(HTMLelem, options){
    * @param  {int} choice    the id of the cloneclass in the this.CloneClassList
    * @return {void}
    */
-  this.select = function (choice){
+  this.select = function (choice) {
     this.selected = choice;
     this.renderMetrics();
     this.emit("onSelect", choice);
   };
 
-  this.onCloneClassChange = function(event, ui){
+  this.onCloneClassChange = function(event, ui) {
     this.select(ui.item.index);
   };
 
@@ -98,8 +128,8 @@ SM.CloneClassSelector = function(HTMLelem, options){
     if (val === undefined) {
       return '-';
     }
-    SM.state[SM.options.component.key].clone.classMetrics.forEach(function(tempMetric){
-      if (metric === tempMetric.title){
+    SM.state[SM.options.component.key].clone.classMetrics.forEach(function(tempMetric) {
+      if (metric === tempMetric.title) {
         metric = tempMetric;
       }
     });
@@ -112,6 +142,9 @@ SM.CloneClassSelector = function(HTMLelem, options){
     var iconClass = "";
     var iconStyle = "";
     if (metric.baseline === undefined) {
+      valueClass = "";
+      iconClass = "";
+      iconStyle = "";
     } else if (metric.direction === -1) { // 1:lesser=worse && larger=better;
       valueClass = (val <= metric.baseline) ? greenClass : redClass;
       iconClass = (val <= metric.baseline) ? faCheckCircle : faExclamationCircle;

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-2017, FrontEndART Software Ltd.
+ * Copyright (c) 2014-2018, FrontEndART Software Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -265,7 +265,18 @@ SM.CloneWidget = function(elem, options) {
   }
   this.setRowsStartOffset = this.setRowsStartOffset.bind(this);
 
-//új betöltő
+  /**
+   * Generates a link that points to the CloneViewer interface. When clicked the browser is
+   * redirected to show the CloneViewer with the clicked Instance selected on the left pane
+   * and another Instance from the same class on the right pane. The other instance is
+   * instance-#2 if instance-#1 was clicked, in any other case instance-#1 is selected as
+   * the right hand side instance.
+   *
+   * @param  {CloneInstance} pack  cloneInstance
+   * @param  {index}         i     index  of the parent clonClass
+   * @param  {index}         j     index  of the current cloneInstace inside the parent cloneClass
+   * @return {String}              an HTML <li> element
+   */
   this.generateCloneViewerLink = function(pack, i, j){
     var anchor = pack.name;
     if (pack.positions[0]) {
@@ -493,12 +504,8 @@ SM.CloneWidget = function(elem, options) {
       }
     });
     // loading metric thresholds one by one
-    this.instanceMetrics.forEach(function(metric) {
-      SM.MetricLoader.requestMetric(metric);
-    });
-    this.classMetrics.forEach(function(metric) {
-      SM.MetricLoader.requestMetric(metric);
-    });
+    this.instanceMetrics.forEach(SM.MetricLoader.requestMetric);
+    this.classMetrics.forEach(SM.MetricLoader.requestMetric);
   };
 
   this.merge = function(other) {
