@@ -148,7 +148,7 @@ SM.MetricLoader = new (function() { // Singleton object
     }).then(function(response) {
 
       uniqueKeys.forEach(function(key) {
-        var instance = queriedMetrics[key]
+        var instance = queriedMetrics[key];
         // correct the direction for some metrics
         if (config.reversedMetrics.indexOf(instance.title) != -1) {
           instance.direction = 1;

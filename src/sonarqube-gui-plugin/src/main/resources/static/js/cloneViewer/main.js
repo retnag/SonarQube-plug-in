@@ -88,7 +88,7 @@ SM.cloneViewer.generatePositionAnchorPopup = function(instance) {
 SM.cloneViewer.init = function() {
   SM.pageBuilder.cloneViewer.build();
   SM.state[SM.options.component.key].cloneViewer.data = new SM.CloneViewer();
-}
+};
 
 SM.cloneViewer.main = function() {
 

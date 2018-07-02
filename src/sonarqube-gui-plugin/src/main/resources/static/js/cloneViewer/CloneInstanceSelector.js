@@ -88,11 +88,9 @@ SM.CloneInstanceSelector = function(HTMLelem, options) {
     // make selectmenu
     $("#cloneInstanceSelector" + this.id + " #selectmenu").selectmenu();
     $("#cloneInstanceSelector" + this.id + " #selectmenu").val(this.selected).selectmenu("refresh");
-
-
   };
 
-  this.renderMetrics = function(){
+  this.renderMetrics = function() {
     var div = $('#cloneInstanceMetricsContainer'+this.id);
     var html = [];
     var data = this.cloneInstanceList[this.selected].cloneInstanceMetrics;
